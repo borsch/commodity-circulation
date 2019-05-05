@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html ng-app="products" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <title>Товар</title>
+</head>
+<body ng-controller="products_list">
+    <th:block th:replace="common::header" />
+    <div>
+        <div class="row" style="width: 95%; margin-left: 10px;">
+            <div class="form-group col-md-8">
+                <label>Пошук за кодом/назвою</label>
+                <input class="form-control" ng-model="filter_query" style="border: 1px solid;">
+            </div>
+            <div class="col-md-4 text-right" style="line-height: 5.5">
+                <button class="btn btn-success" href="#addProductModal" ng-click="before_product_edit_model()" data-toggle="modal">Додати товар</button>
+            </div>
+        </div>
+        <table class="table table-striped table-bordered table-sm table-hover" style="width: 100%;">
+        <thead>
+            <tr>
+                <th rowspan="2" class="text-center" style="vertical-align: middle;">#</th>
+                <th rowspan="2" class="text-center" style="vertical-align: middle;">Код</th>
+                <th rowspan="2" class="text-center" style="vertical-align: middle;">Назва</th>
+                <th rowspan="2" class="text-center" style="vertical-align: middle;">Од. вимірювання</th>
+                <th rowspan="2" class="text-center" style="vertical-align: middle;">Залишок</th>
+                <th colspan="3" class="text-center">
+                    Ціна/од.
+                </th>
+                <th colspan="2" class="text-center">
+                    Прихід
+                </th>
+                <th class="text-center">
+                    Продаж
+                </th>
+                <th class="text-center">Прибуток</th>
+            </tr>
+            <tr>
+                <th class="text-center">
+                    Закупівельна, грн.
+                </th>
+                <th class="text-center">
+                    Закупівеньна, дол.
+                </th>
+                <th class="text-center">
+                    Роздрібна, грн.
+                </th>
+                <th class="text-center">
+                    грн.
+                </th>
+                <th class="text-center">
+                    дол.
+                </th>
+                <th class="text-center">
+                    грн.
+                </th>
+                <th class="text-center">
+                    грн.
+                </th>
+            </tr>
+        </thead>
+        <tbody style="overflow-y: auto;">
+            <tr ng-repeat="product in products | filter:filter_query" ng-click="before_product_edit_model(product)" href="#addProductModal" data-toggle="modal" style="cursor: pointer">
+                <td>{{$index + 1}}</td>
+                <td>{{product.code}}</td>
+                <td>{{product.name}}</td>
+                <td>{{product.unit}}</td>
+                <td>{{product.residual}}</td>
+                <td>{{product.defaultPurchasePrice}}</td>
+                <td>{{product.defaultPurchasePriceUsd}}</td>
+                <td>{{product.defaultSalePrice}}</td>
+                <td>{{product.incomesInfo.totalIncomePrice.toFixed(2)}}</td>
+                <td>{{product.incomesInfo.totalIncomePriceUsd.toFixed(2)}}</td>
+                <td>{{(product.residual * product.defaultSalePrice).toFixed(2)}}</td>
+                <td>{{((product.residual * product.defaultSalePrice) - product.incomesInfo.totalIncomePrice).toFixed(2)}}</td>
+            </tr>
+        </tbody>
+    </table>
+    </div>
+
+    <div id="addProductModal" class="modal fade">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                    <h4 class="modal-title">Створити новий товар</h4>
+                </div>
+                <div class="modal-body">
+                    <h4>{{save_product_message}}</h4>
+                    <ul>
+                        <li ng-repeat="message in save_product_message_errors">
+                            {{message}}
+                        </li>
+                    </ul>
+
+                    <div class="form-group">
+                        <label>Код</label>
+                        <input ng-model="edit_product.code" class="form-control">
+                    </div>
+                    <div class="form-group">
+                        <label>Назва</label>
+                        <input ng-model="edit_product.name" class="form-control">
+                    </div>
+                    <div class="form-group">
+                        <label>Одининці вимірювання</label>
+                        <input ng-model="edit_product.unit" class="form-control">
+                    </div>
+                    <div class="form-group">
+                        <label>Кількість одиниць доступних на складні</label>
+                        <input ng-model="edit_product.residual" class="form-control">
+                    </div>
+                    <div class="form-group">
+                        <label>Ціна приходу(грн.)</label>
+                        <input ng-model="edit_product.defaultPurchasePrice" class="form-control">
+                    </div>
+                    <div class="form-group">
+                        <label>Ціна приходу(дол.)</label>
+                        <input ng-model="edit_product.defaultPurchasePriceUsd" class="form-control">
+                    </div>
+                    <div class="form-group">
+                        <label>Ціна продажу(грн.)</label>
+                        <input ng-model="edit_product.defaultSalePrice" class="form-control">
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Закрити</button>
+                    <button type="button" class="btn btn-primary" ng-click="save_product()">
+                        {{edit_product.id ? 'Зберегти' : 'Створити'}}
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <th:block th:replace="common::footer" />
+    <script>
+        var productModule = angular.module('products', []);
+
+        productModule.controller('products_list', function($scope){
+        	$scope.products = [];
+
+        	Ajax.get({
+                url: '/api/products/',
+                data: {
+                	fields: 'id,code,name,unit,residual,defaultPurchasePrice,defaultPurchasePriceUsd,defaultSalePrice,incomesInfo'
+                },
+                success: function(response) {
+                	if (response.result) {
+                		$scope.$apply(function(){
+							$scope.products = response.result;
+                        });
+                    }
+                }
+            });
+
+        	$scope.before_product_edit_model = function(product) {
+        		if (product) {
+					$scope.edit_product = angular.copy(product);
+                } else {
+					$scope.edit_product = {
+						residual: 0
+                    };
+				}
+            };
+
+            $scope.save_product = function() {
+				$scope.save_product_message = '';
+				$scope.save_product_message_errors = [];
+
+            	Ajax.save({
+                    url: '/api/products/',
+                    data: $scope.edit_product,
+                    success: function(response) {
+                    	$scope.$apply(function(){
+							if (response.result) {
+								$scope.save_product_message = 'Збережено';
+
+								var id = $scope.edit_product.id || response.result;
+
+								if ($scope.edit_product.id) {
+
+                                } else {
+									$scope.products.push({
+                                        id: id
+                                    });
+                                }
+
+                                loadProduct($scope, id);
+							} else {
+								$scope.save_product_message = response.error.message;
+								$scope.save_product_message_errors = response.error.errors || [];
+							}
+                        });
+                    }
+                });
+            }
+        });
+
+        function loadProduct($scope, productId) {
+			Ajax.get({
+				url: '/api/products/' + productId,
+				data: {
+					fields: 'id,code,name,unit,residual,defaultPurchasePrice,defaultPurchasePriceUsd,defaultSalePrice,incomesInfo'
+				},
+				success: function(response) {
+					var product = response.result;
+
+					if (product) {
+						$scope.$apply(function(){
+							for (var i = 0; i < $scope.products.length; ++i) {
+								if ($scope.products[i].id === product.id) {
+									$scope.products[i] = product;
+									break;
+                                }
+                            }
+						});
+					}
+				}
+			});
+        }
+    </script>
+</body>
+</html>

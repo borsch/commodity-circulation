@@ -1,0 +1,347 @@
+<!DOCTYPE html>
+<html ng-app="in_out" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <title>Прихід-розхід</title>
+</head>
+<body ng-controller="in_out">
+    <th:block th:replace="common::header" />
+    <div class="row" style="width: 95%; margin-left: 10px;">
+        <div class="col-md-6">
+            <div class="row text-center">
+                <div class="col-md-10">
+                    <h3>Прихід товару</h3>
+                </div>
+                <div class="col-md-2" style="line-height: 4.5">
+                    <button class="btn btn-success" href="#addIncome" ng-click="before_product_edit_model()" data-toggle="modal">Форма приходу</button>
+                </div>
+            </div>
+            <div ng-repeat="order in incomeOrdersList | orderBy:['dateCreated']:true" style="margin-bottom: 10px; cursor: pointer; background: #d1d0db; padding: 7px;" ng-click="previewIncomeOrder(order.id)">
+                <div class="row">
+                    <div class="col-sm-2">
+                        &#35;{{order.id}}
+                    </div>
+                    <div class="col-sm-6">
+                        {{order.dateCreated_f}}
+                    </div>
+                    <div>
+                        {{order.comment}}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <th:block th:replace="common::footer" />
+    <script src="/resources/js/utils/autocomlete/jquery.auto-complete.min.js"></script>
+    <link rel="stylesheet" href="/resources/js/utils/autocomlete/jquery.auto-complete.css">
+
+    <link rel="stylesheet" href="/resources/js/flatpickr/flatpickr.min.css">
+    <link rel="stylesheet" href="/resources/js/flatpickr/dark.css">
+    <script src="/resources/js/flatpickr/flatpickr.js"></script>
+
+    <script src="/resources/js/utils/date.format.min.js"></script>
+
+    <div id="addIncome" class="modal fade">
+        <div class="modal-dialog modal-lg" style="width: 1200px;">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                    <h4 class="modal-title">Форма приходу товару</h4>
+                </div>
+                <div class="modal-body">
+                    <h4>{{income_order_message}}</h4>
+                    <ul>
+                        <li ng-repeat="message in income_order_message_errors">
+                            {{message}}
+                        </li>
+                    </ul>
+
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>Товар</th>
+                                <th>Кількість</th>
+                                <th>Ціна за одиницю в гривні</th>
+                                <th>Ціна за одиницю в доларах</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr ng-repeat="income in income_order_body.incomes">
+                                <td>{{income.product.name}}<br />{{income.product.code}}</td>
+                                <td>
+                                    <div class="form-group row">
+                                        <div class="col-sm-7" style="padding-right: 1px;">
+                                            <input class="form-control" ng-model="income.amount">
+                                        </div>
+                                        <label class="col-sm-5" style="font-size: 23px;"> {{income.product.unit}}</label>
+                                    </div>
+                                </td>
+                                <td>
+                                    <div class="form-group row">
+                                        <div class="col-sm-7" style="padding-right: 1px;">
+                                            <input class="form-control" ng-model="income.incomePrice">
+                                        </div>
+                                        <label class="col-sm-5" style="font-size: 23px;"> / {{income.product.unit}}</label>
+                                    </div>
+                                </td>
+                                <td>
+                                    <div class="form-group row">
+                                        <div class="col-sm-7" style="padding-right: 1px;">
+                                            <input class="form-control" ng-model="income.incomePriceUsd">
+                                        </div>
+                                        <label class="col-sm-5" style="font-size: 23px;"> / {{income.product.unit}}</label>
+                                    </div>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <div class="row">
+                        <div class="form-group col-sm-7">
+                            <label>Коментар до замовлення</label>
+                            <textarea class="form-control" ng-model="income_order_body.comment"></textarea>
+                        </div>
+                        <div class="form-group col-sm-5">
+                            <label>Дата приходу</label>
+                            <input class="form-control" id="income_order_body_dateCreated" />
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label>Додати товар</label>
+                        <input class="form-control" id="incomeAutoComplete">
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Закрити</button>
+                    <button type="button" class="btn btn-primary" ng-click="saveIncomeOrder()">Зберегти</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="addIncomePreview" class="modal fade">
+        <div class="modal-dialog modal-lg" style="width: 1200px;">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                    <h4 class="modal-title">Прихід товару &#35;{{income_order_preview.id}}</h4>
+                </div>
+                <div class="modal-body">
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>Товар</th>
+                                <th>Кількість в приході</th>
+                                <th>Залишок</th>
+                                <th>Ціна за одиницю в гривні</th>
+                                <th>Ціна за одиницю в доларах</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr ng-repeat="income in income_order_preview.incomesInfo">
+                                <td>{{income.productInfo.name}}<br />{{income.productInfo.code}}</td>
+                                <td>
+                                    <div class="form-group row">
+                                        <label class="col-sm-12" style="font-size: 23px;">{{income.amount}} {{income.productInfo.unit}}</label>
+                                    </div>
+                                </td>
+                                <td>
+                                    <div class="form-group row">
+                                        <label class="col-sm-12" style="font-size: 23px;">{{income.residual}} {{income.productInfo.unit}}</label>
+                                    </div>
+                                </td>
+                                <td>
+                                    <div class="form-group row">
+                                        <label class="col-sm-12" style="font-size: 23px;">{{income.incomePrice}} / {{income.productInfo.unit}}</label>
+                                    </div>
+                                </td>
+                                <td>
+                                    <div class="form-group row">
+                                        <label class="col-sm-5" style="font-size: 23px;">{{income.incomePriceUsd}} / {{income.productInfo.unit}}</label>
+                                    </div>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <div class="row">
+                        <div class="form-group col-sm-7">
+                            <label>Коментар до замовлення:</label>
+                            {{income_order_preview.comment}}
+                        </div>
+                        <div class="form-group col-sm-5">
+                            <label>Дата приходу:</label>
+                            {{income_order_preview.dateCreated_f}}
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Закрити</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        var productModule = angular.module('in_out', []);
+
+        productModule.controller('in_out', function($scope){
+            $scope.income_order_body = {
+            	incomes: []
+            };
+
+            $scope.incomeOrdersList = [];
+
+			Ajax.get({
+				url: '/api/orders/income/',
+				data: {
+					fields: 'id,comment,dateCreated,incomesInfo'
+				},
+				success: function(response) {
+					var orders = response.result || [];
+
+					$scope.$apply(function(){
+						$scope.incomeOrdersList = orders;
+						$scope.incomeOrdersList.forEach(function(item){
+							if (item.dateCreated) {
+								item.dateCreated_f = new Date(item.dateCreated).format('dd MMMM, yyyy', 'uk')
+							}
+                        });
+					});
+				}
+			});
+
+            $scope.saveIncomeOrder = function() {
+				$scope.income_order_message = '';
+				$scope.income_order_message_errors = [];
+                $scope.income_order_body.dateCreated = $('#income_order_body_dateCreated').val();
+
+                Ajax.put({
+                    url: '/api/orders/income/',
+                    data: $scope.income_order_body,
+                    success: function(response) {
+                    	$scope.$apply(function(){
+							if (response.result) {
+								$scope.income_order_body = {
+									incomes: []
+								};
+
+								loadIncomeOrder(response.result, $scope, true);
+							} else {
+								$scope.income_order_message = response.error.message;
+								$scope.income_order_message_errors = response.error.errors;
+                            }
+                        });
+                    }
+                })
+            };
+
+            $scope.previewIncomeOrder = function(id) {
+            	loadIncomeOrder(id, $scope);
+            };
+
+            incomeAutoComplete($scope);
+        });
+
+		$('#income_order_body_dateCreated, [name=till]').flatpickr({
+			dateFormat: 'd/m/Y',
+			altInput: true,
+			altFormat: "F j, Y",
+			locale: {
+				firstDayOfWeek: 1,
+				weekdays: {
+					shorthand: ['Нд', 'Пн', 'Вт', 'Ср', 'Чт', 'Пт', 'Сб'],
+					longhand: ['Неділя', 'Понеділок', 'Вівторок', 'Середа', 'Четвер', 'П\'ятниця', 'Субота']
+				},
+				months: {
+					shorthand: ['Січ', 'Лют', 'Бер', 'Кві', 'Тра', 'Чер', 'Лип', 'Сер', 'Вер', 'Жов', 'Лист', 'Гру'],
+					longhand: ['Січень', 'Лютий', 'Березень', 'Квітень', 'Травень', 'Червень', 'Липень', 'Сервень', 'Вересень', 'Жовтень', 'Листопад', 'Грудень']
+				}
+			}
+		});
+
+		function loadIncomeOrder(id, $scope, isNew) {
+			$('#addIncome').modal('hide');
+			$('#addIncomePreview').modal('show');
+
+			Ajax.get({
+                url: '/api/orders/income/' + id,
+                data: {
+                	fields: 'id,comment,dateCreated,incomesInfo'
+                },
+                success: function(response) {
+                	console.log(response);
+
+                	$scope.$apply(function(){
+                		$scope.income_order_preview = response.result || {};
+                		if ($scope.income_order_preview.dateCreated) {
+							$scope.income_order_preview.dateCreated_f = new Date($scope.income_order_preview.dateCreated).format('dd MMMM, yyyy', 'uk')
+                        }
+
+                        if (isNew) {
+                        	$scope.incomeOrdersList.push(angular.copy($scope.income_order_preview));
+                        }
+                    });
+                }
+            })
+        }
+
+        function incomeAutoComplete($scope) {
+			$('#incomeAutoComplete').unbind().autoComplete({
+				minChars: 1,
+				source: function(term, suggest) {
+					$scope.$apply(function(){
+						$scope.income_order_message = '';
+						$scope.income_order_message_errors = [];
+					});
+
+					Ajax.get({
+						url: '/api/products/',
+						data: {
+							restrict: JSON.stringify({query: term}),
+							fields: 'id,name,code'
+						},
+						success: function(response) {
+							suggest(response.result || []);
+						}
+					});
+				},
+				onSelect: function(e, term, item) {
+					Ajax.get({
+						url: '/api/products/' + $(item).data('product-id'),
+						data: {
+							restrict: JSON.stringify({query: term}),
+							fields: 'id,name,code,unit,defaultPurchasePrice,defaultPurchasePriceUsd'
+						},
+						success: function(response) {
+							var product = response.result;
+
+							if (product) {
+								$scope.$apply(function(){
+									var added = $scope.income_order_body.incomes.some(function(item){
+										return item.productId === product.id
+									});
+
+									if (!added) {
+										$scope.income_order_body.incomes.push({
+											productId: product.id,
+											product: product
+										});
+									} else {
+										$scope.income_order_message = 'Цей товар вже додано';
+									}
+								});
+							}
+						}
+					});
+				},
+				renderItem: function(product, search) {
+					search = search.replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&');
+					var re = new RegExp("(" + search.split(' ').join('|') + ")", "gi");
+
+					return '<div class="autocomplete-suggestion" data-product-id="' + product.id + '">'
+						+ product.code.replace(re, "<b>$1</b>") + ', ' + product.name.replace(re, "<b>$1</b>") + '</div>'
+				}
+			})
+        }
+    </script>
+</body>
+</html>
