@@ -29,6 +29,12 @@ public class Fields {
         public static final String COMMENT = "comment";
     }
 
+    public static final class OutcomeOrder {
+        public static final String DATE_CREATED = "dateCreated";
+        public static final String COMMENT = "comment";
+    }
+
+
     public static final String ID = "id";
 
 }
