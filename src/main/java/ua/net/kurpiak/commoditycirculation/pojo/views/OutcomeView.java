@@ -7,8 +7,9 @@ import ua.net.kurpiak.commoditycirculation.pojo.helpers.IHasId;
 public class OutcomeView implements IHasId<Integer> {
 
     private Integer id;
-    private int product;
+    private Integer productId;
     private double amount;
     private double salePrice;
+    private Integer outcomeOrderId;
 
 }

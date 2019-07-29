@@ -1,16 +1,17 @@
 package ua.net.kurpiak.commoditycirculation.persistence.criteria.impl;
 
-import ua.net.kurpiak.commoditycirculation.persistence.criteria.Criteria;
-import ua.net.kurpiak.commoditycirculation.exceptions.WrongRestrictionException;
-import ua.net.kurpiak.commoditycirculation.pojo.entities.IncomeEntity;
-import ua.net.kurpiak.commoditycirculation.pojo.entities.ProductEntity;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.Join;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
-import java.util.ArrayList;
-import java.util.List;
+
+import ua.net.kurpiak.commoditycirculation.exceptions.WrongRestrictionException;
+import ua.net.kurpiak.commoditycirculation.persistence.criteria.Criteria;
+import ua.net.kurpiak.commoditycirculation.pojo.entities.IncomeEntity;
+import ua.net.kurpiak.commoditycirculation.pojo.entities.ProductEntity;
 
 public class IncomeCriteria extends Criteria<IncomeEntity> {
 
