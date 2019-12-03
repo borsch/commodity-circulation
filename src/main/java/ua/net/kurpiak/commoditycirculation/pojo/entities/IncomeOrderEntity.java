@@ -1,12 +1,26 @@
 package ua.net.kurpiak.commoditycirculation.pojo.entities;
 
+import java.time.LocalDate;
+import java.util.List;
+
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.OneToMany;
+import javax.persistence.Table;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
+
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.ToString;
 import ua.net.kurpiak.commoditycirculation.pojo.helpers.IHasId;
 
-import javax.persistence.*;
-import java.util.Date;
-import java.util.List;
-import java.util.Objects;
-
+@Data
+@ToString(exclude = "incomes")
+@EqualsAndHashCode(exclude = "incomes")
 @Entity
 @Table(name = "INCOME_ORDER")
 public class IncomeOrderEntity implements IHasId<Integer> {
@@ -19,9 +33,8 @@ public class IncomeOrderEntity implements IHasId<Integer> {
     @Column(name = "COMMENT")
     private String comment;
 
-    @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "DATE_CREATED")
-    private Date dateCreated;
+    private LocalDate dateCreated;
 
     @OneToMany(mappedBy = "incomeOrder")
     private List<IncomeEntity> incomes;
@@ -36,51 +49,4 @@ public class IncomeOrderEntity implements IHasId<Integer> {
         this.id = id;
     }
 
-    public String getComment() {
-        return comment;
-    }
-
-    public void setComment(String comment) {
-        this.comment = comment;
-    }
-
-    public Date getDateCreated() {
-        return dateCreated;
-    }
-
-    public void setDateCreated(Date dateCreated) {
-        this.dateCreated = dateCreated;
-    }
-
-    public List<IncomeEntity> getIncomes() {
-        return incomes;
-    }
-
-    public void setIncomes(List<IncomeEntity> incomes) {
-        this.incomes = incomes;
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) {
-            return true;
-        }
-        if (o == null || getClass() != o.getClass()) {
-            return false;
-        }
-        IncomeOrderEntity entity = (IncomeOrderEntity) o;
-        return id == entity.id && Objects.equals(comment, entity.comment) && Objects
-            .equals(dateCreated, entity.dateCreated);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(id, comment, dateCreated);
-    }
-
-    @Override
-    public String toString() {
-        return "IncomeOrderEntity{" + "id=" + id + ", comment='" + comment + '\'' + ", dateCreated=" + dateCreated
-               + '}';
-    }
 }

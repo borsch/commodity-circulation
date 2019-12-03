@@ -3,13 +3,12 @@ package ua.net.kurpiak.commoditycirculation.services.outcome;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import lombok.extern.slf4j.Slf4j;
 import ma.glasnost.orika.CustomMapper;
 import ma.glasnost.orika.MapperFactory;
 import ma.glasnost.orika.MappingContext;
-import ua.net.kurpiak.commoditycirculation.exceptions.BaseException;
 import ua.net.kurpiak.commoditycirculation.exceptions.WrongRestrictionException;
 import ua.net.kurpiak.commoditycirculation.persistence.criteria.Criteria;
-import ua.net.kurpiak.commoditycirculation.persistence.criteria.impl.IncomeCriteria;
 import ua.net.kurpiak.commoditycirculation.persistence.criteria.impl.OutcomeCriteria;
 import ua.net.kurpiak.commoditycirculation.persistence.dao.OutcomeOrderRepository;
 import ua.net.kurpiak.commoditycirculation.persistence.dao.ProductRepository;
@@ -18,6 +17,7 @@ import ua.net.kurpiak.commoditycirculation.pojo.views.OutcomeView;
 import ua.net.kurpiak.commoditycirculation.services.BaseService;
 import ua.net.kurpiak.commoditycirculation.services.income.IncomeService;
 
+@Slf4j
 @Component
 public class OutcomeService extends BaseService<OutcomeEntity, OutcomeView, Integer> {
 
@@ -37,16 +37,7 @@ public class OutcomeService extends BaseService<OutcomeEntity, OutcomeView, Inte
     @Override
     public void postCreate(final OutcomeEntity entity) {
         if (entity.getProduct() != null) {
-            IncomeCriteria incomeCriteria = new IncomeCriteria();
-            incomeCriteria.setHasMore(true);
-            incomeCriteria.setProductId(entity.getProduct().getId());
-            incomeCriteria.setOrder_by("incomeOrder.dateCreated");
-
-            try {
-                incomeService.getList(incomeCriteria);
-            } catch (BaseException e) {
-                e.printStackTrace();
-            }
+            incomeService.handleWithdraw(entity.getProduct(), entity.getAmount());
         }
     }
 

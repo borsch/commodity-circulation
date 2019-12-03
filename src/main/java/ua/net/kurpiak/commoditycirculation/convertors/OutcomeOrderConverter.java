@@ -22,7 +22,7 @@ public class OutcomeOrderConverter extends Converter<OutcomeOrderEntity> {
         if (fields.contains(ID))
             map.put(ID, object.getId());
         if (fields.contains(DATE_CREATED))
-            map.put(DATE_CREATED, object.getDateCreated().getTime());
+            map.put(DATE_CREATED, object.getDateCreated());
         if (fields.contains(COMMENT))
             map.put(COMMENT, object.getComment());
 

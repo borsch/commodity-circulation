@@ -1,12 +1,17 @@
 package ua.net.kurpiak.commoditycirculation.services.income;
 
-import ma.glasnost.orika.CustomMapper;
-import ma.glasnost.orika.MapperFactory;
-import ma.glasnost.orika.MappingContext;
+import static org.springframework.util.CollectionUtils.isEmpty;
+
+import java.time.LocalDate;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
+
+import ma.glasnost.orika.CustomMapper;
+import ma.glasnost.orika.MapperFactory;
+import ma.glasnost.orika.MappingContext;
 import ua.net.kurpiak.commoditycirculation.exceptions.BaseException;
 import ua.net.kurpiak.commoditycirculation.exceptions.service_error.ValidationException;
 import ua.net.kurpiak.commoditycirculation.persistence.criteria.Criteria;
@@ -16,17 +21,9 @@ import ua.net.kurpiak.commoditycirculation.pojo.views.IncomeOrderView;
 import ua.net.kurpiak.commoditycirculation.pojo.views.IncomeView;
 import ua.net.kurpiak.commoditycirculation.services.BaseService;
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-
-import static org.springframework.util.CollectionUtils.isEmpty;
-
 @Service
 @Transactional(rollbackFor = BaseException.class)
 public class IncomeOrderService extends BaseService<IncomeOrderEntity, IncomeOrderView, Integer> {
-
-    private static final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("dd/MM/yyyy");
 
     @Autowired
     private IncomeService incomeService;
@@ -65,12 +62,12 @@ public class IncomeOrderService extends BaseService<IncomeOrderEntity, IncomeOrd
                          public void mapBtoA(IncomeOrderView view, IncomeOrderEntity entity, MappingContext context) {
                              if (!StringUtils.isEmpty(view.getDateCreated())) {
                                  try {
-                                     entity.setDateCreated(DATE_FORMAT.parse(view.getDateCreated()));
-                                 } catch (ParseException e) {
+                                     entity.setDateCreated(LocalDate.parse(view.getDateCreated()));
+                                 } catch (Exception e) {
                                      throw new ValidationException("income order date", "Дата приходу має неправельний формат");
                                  }
                              } else {
-                                 entity.setDateCreated(new Date());
+                                 entity.setDateCreated(LocalDate.now());
                              }
                          }
                      })

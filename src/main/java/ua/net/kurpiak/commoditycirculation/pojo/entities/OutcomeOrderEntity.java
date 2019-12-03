@@ -1,13 +1,22 @@
 package ua.net.kurpiak.commoditycirculation.pojo.entities;
 
+import java.time.LocalDate;
+import java.util.List;
+
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.OneToMany;
+import javax.persistence.Table;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
+
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
 import ua.net.kurpiak.commoditycirculation.pojo.helpers.IHasId;
-
-import javax.persistence.*;
-import java.util.Date;
-import java.util.List;
 
 @Data
 @ToString(exclude = "outcomes")
@@ -24,9 +33,8 @@ public class OutcomeOrderEntity implements IHasId<Integer> {
     @Column(name = "COMMENT")
     private String comment;
 
-    @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "DATE_CREATED")
-    private Date dateCreated;
+    private LocalDate dateCreated;
 
     @Column(name = "TOTAL_PRICE")
     private double totalPrice;

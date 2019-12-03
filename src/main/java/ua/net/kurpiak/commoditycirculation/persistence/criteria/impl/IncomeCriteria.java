@@ -8,11 +8,15 @@ import javax.persistence.criteria.Join;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
+import lombok.Getter;
+import lombok.Setter;
 import ua.net.kurpiak.commoditycirculation.exceptions.WrongRestrictionException;
 import ua.net.kurpiak.commoditycirculation.persistence.criteria.Criteria;
 import ua.net.kurpiak.commoditycirculation.pojo.entities.IncomeEntity;
 import ua.net.kurpiak.commoditycirculation.pojo.entities.ProductEntity;
 
+@Getter
+@Setter
 public class IncomeCriteria extends Criteria<IncomeEntity> {
 
     private Integer productId;
@@ -46,21 +50,5 @@ public class IncomeCriteria extends Criteria<IncomeEntity> {
         }
 
         return predicates;
-    }
-
-    public Integer getProductId() {
-        return productId;
-    }
-
-    public void setProductId(Integer productId) {
-        this.productId = productId;
-    }
-
-    public Boolean getHasMore() {
-        return hasMore;
-    }
-
-    public void setHasMore(Boolean hasMore) {
-        this.hasMore = hasMore;
     }
 }
