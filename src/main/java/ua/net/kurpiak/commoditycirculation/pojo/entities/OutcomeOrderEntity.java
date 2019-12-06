@@ -10,8 +10,6 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -28,7 +26,7 @@ public class OutcomeOrderEntity implements IHasId<Integer> {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "ID")
-    private int id;
+    private Integer id;
 
     @Column(name = "COMMENT")
     private String comment;
@@ -45,13 +43,4 @@ public class OutcomeOrderEntity implements IHasId<Integer> {
     @OneToMany(mappedBy = "order")
     private List<OutcomeEntity> outcomes;
 
-    @Override
-    public Integer getId() {
-        return id;
-    }
-
-    @Override
-    public void setId(Integer id) {
-        this.id = id;
-    }
 }

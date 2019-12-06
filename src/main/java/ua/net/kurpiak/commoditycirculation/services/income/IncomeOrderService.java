@@ -4,18 +4,21 @@ import static org.springframework.util.CollectionUtils.isEmpty;
 
 import java.time.LocalDate;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 
 import ma.glasnost.orika.CustomMapper;
+import ma.glasnost.orika.MapperFacade;
 import ma.glasnost.orika.MapperFactory;
 import ma.glasnost.orika.MappingContext;
+import ua.net.kurpiak.commoditycirculation.convertors.IncomeOrderConverter;
 import ua.net.kurpiak.commoditycirculation.exceptions.BaseException;
 import ua.net.kurpiak.commoditycirculation.exceptions.service_error.ValidationException;
 import ua.net.kurpiak.commoditycirculation.persistence.criteria.Criteria;
+import ua.net.kurpiak.commoditycirculation.persistence.criteria.CriteriaRepository;
 import ua.net.kurpiak.commoditycirculation.persistence.criteria.impl.IncomeOrderCriteria;
+import ua.net.kurpiak.commoditycirculation.persistence.dao.IncomeOrderRepository;
 import ua.net.kurpiak.commoditycirculation.pojo.entities.IncomeOrderEntity;
 import ua.net.kurpiak.commoditycirculation.pojo.views.IncomeOrderView;
 import ua.net.kurpiak.commoditycirculation.pojo.views.IncomeView;
@@ -25,8 +28,14 @@ import ua.net.kurpiak.commoditycirculation.services.BaseService;
 @Transactional(rollbackFor = BaseException.class)
 public class IncomeOrderService extends BaseService<IncomeOrderEntity, IncomeOrderView, Integer> {
 
-    @Autowired
-    private IncomeService incomeService;
+    private final IncomeService incomeService;
+
+    public IncomeOrderService(final IncomeOrderRepository repository, final IncomeOrderConverter converter, final MapperFacade mapperFacade,
+        final CriteriaRepository criteriaRepository, final IncomeOrderValidator validationService, final IncomeService incomeService) {
+        super(repository, converter, mapperFacade, criteriaRepository, validationService);
+
+        this.incomeService = incomeService;
+    }
 
     @Override
     public Criteria<IncomeOrderEntity> parse(String restrict) {

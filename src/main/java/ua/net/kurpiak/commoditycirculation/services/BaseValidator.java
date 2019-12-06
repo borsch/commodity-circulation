@@ -1,32 +1,25 @@
 package ua.net.kurpiak.commoditycirculation.services;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import java.util.Set;
+
+import javax.validation.ConstraintViolation;
+import javax.validation.Validator;
+
+import lombok.RequiredArgsConstructor;
 import ua.net.kurpiak.commoditycirculation.exceptions.BaseException;
 import ua.net.kurpiak.commoditycirculation.exceptions.service_error.ValidationException;
 import ua.net.kurpiak.commoditycirculation.pojo.helpers.IHasId;
 
-import javax.validation.ConstraintViolation;
-import javax.validation.Validator;
-import java.util.Set;
+@RequiredArgsConstructor
+public abstract class BaseValidator<E extends IHasId<I>, I extends Comparable<I>> {
 
-public abstract class BaseValidator<E extends IHasId<I>, I extends Comparable<I>> implements IValidator<E> {
+    protected final Validator validator;
+    private final Class<E> persistentClass;
 
-    @Autowired
-    public Validator validator;
-
-    private Class<E> persistentClass;
-
-    public BaseValidator(Class<E> persistentClass){
-        this.persistentClass = persistentClass;
-    }
-
-
-    @Override
     public void validForCreate(E entity) throws BaseException {
         validateConstraints(entity);
     }
 
-    @Override
     public void validForUpdate(E entity) throws BaseException {
         validateConstraints(entity);
     }
@@ -38,7 +31,6 @@ public abstract class BaseValidator<E extends IHasId<I>, I extends Comparable<I>
         }
     }
 
-    @Override
     public void validForDelete(E entity) throws BaseException {
 
     }

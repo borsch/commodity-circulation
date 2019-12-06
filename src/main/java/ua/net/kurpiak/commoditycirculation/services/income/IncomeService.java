@@ -2,18 +2,20 @@ package ua.net.kurpiak.commoditycirculation.services.income;
 
 import java.util.List;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import lombok.extern.slf4j.Slf4j;
 import ma.glasnost.orika.CustomMapper;
+import ma.glasnost.orika.MapperFacade;
 import ma.glasnost.orika.MapperFactory;
 import ma.glasnost.orika.MappingContext;
+import ua.net.kurpiak.commoditycirculation.convertors.IncomeConverter;
 import ua.net.kurpiak.commoditycirculation.exceptions.AmountExceedLimitException;
 import ua.net.kurpiak.commoditycirculation.exceptions.BaseException;
 import ua.net.kurpiak.commoditycirculation.exceptions.WrongRestrictionException;
 import ua.net.kurpiak.commoditycirculation.persistence.criteria.Criteria;
+import ua.net.kurpiak.commoditycirculation.persistence.criteria.CriteriaRepository;
 import ua.net.kurpiak.commoditycirculation.persistence.criteria.impl.IncomeCriteria;
 import ua.net.kurpiak.commoditycirculation.persistence.dao.IncomeOrderRepository;
 import ua.net.kurpiak.commoditycirculation.persistence.dao.IncomeRepository;
@@ -28,10 +30,16 @@ import ua.net.kurpiak.commoditycirculation.services.BaseService;
 @Transactional(rollbackFor = BaseException.class)
 public class IncomeService extends BaseService<IncomeEntity, IncomeView, Integer> {
 
-    @Autowired
-    private ProductRepository productRepository;
-    @Autowired
-    private IncomeRepository incomeRepository;
+    private final ProductRepository productRepository;
+    private final IncomeRepository incomeRepository;
+
+    public IncomeService(final IncomeRepository repository, final IncomeConverter converter, final MapperFacade mapperFacade,
+        final CriteriaRepository criteriaRepository, final IncomeValidator validationService, final ProductRepository productRepository) {
+        super(repository, converter, mapperFacade, criteriaRepository, validationService);
+
+        this.productRepository = productRepository;
+        this.incomeRepository = repository;
+    }
 
     @Override
     public Criteria<IncomeEntity> parse(String restrict) throws WrongRestrictionException {

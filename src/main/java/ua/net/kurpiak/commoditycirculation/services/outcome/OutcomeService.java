@@ -1,16 +1,19 @@
 package ua.net.kurpiak.commoditycirculation.services.outcome;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import lombok.extern.slf4j.Slf4j;
 import ma.glasnost.orika.CustomMapper;
+import ma.glasnost.orika.MapperFacade;
 import ma.glasnost.orika.MapperFactory;
 import ma.glasnost.orika.MappingContext;
+import ua.net.kurpiak.commoditycirculation.convertors.OutcomeConverter;
 import ua.net.kurpiak.commoditycirculation.exceptions.WrongRestrictionException;
 import ua.net.kurpiak.commoditycirculation.persistence.criteria.Criteria;
+import ua.net.kurpiak.commoditycirculation.persistence.criteria.CriteriaRepository;
 import ua.net.kurpiak.commoditycirculation.persistence.criteria.impl.OutcomeCriteria;
 import ua.net.kurpiak.commoditycirculation.persistence.dao.OutcomeOrderRepository;
+import ua.net.kurpiak.commoditycirculation.persistence.dao.OutcomeRepository;
 import ua.net.kurpiak.commoditycirculation.persistence.dao.ProductRepository;
 import ua.net.kurpiak.commoditycirculation.pojo.entities.OutcomeEntity;
 import ua.net.kurpiak.commoditycirculation.pojo.views.OutcomeView;
@@ -21,8 +24,16 @@ import ua.net.kurpiak.commoditycirculation.services.income.IncomeService;
 @Component
 public class OutcomeService extends BaseService<OutcomeEntity, OutcomeView, Integer> {
 
-    @Autowired
-    private IncomeService incomeService;
+    private final IncomeService incomeService;
+
+    public OutcomeService(
+        final OutcomeRepository repository,
+        final OutcomeConverter converter, final MapperFacade mapperFacade,
+        final CriteriaRepository criteriaRepository,
+        final OutcomeValidator validationService, final IncomeService incomeService) {
+        super(repository, converter, mapperFacade, criteriaRepository, validationService);
+        this.incomeService = incomeService;
+    }
 
     @Override
     public Criteria<OutcomeEntity> parse(final String restrict) throws WrongRestrictionException {

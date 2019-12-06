@@ -1,8 +1,14 @@
 package ua.net.kurpiak.commoditycirculation.services;
 
-import ma.glasnost.orika.MapperFacade;
-import org.springframework.beans.factory.annotation.Autowired;
+import java.io.Serializable;
+import java.util.Collection;
+import java.util.List;
+import java.util.Map;
+
 import org.springframework.transaction.annotation.Transactional;
+
+import lombok.RequiredArgsConstructor;
+import ma.glasnost.orika.MapperFacade;
 import ua.net.kurpiak.commoditycirculation.convertors.Converter;
 import ua.net.kurpiak.commoditycirculation.exceptions.BaseException;
 import ua.net.kurpiak.commoditycirculation.exceptions.WrongRestrictionException;
@@ -13,59 +19,39 @@ import ua.net.kurpiak.commoditycirculation.persistence.criteria.CriteriaReposito
 import ua.net.kurpiak.commoditycirculation.persistence.dao.BaseRepository;
 import ua.net.kurpiak.commoditycirculation.pojo.helpers.IHasId;
 
-import java.io.Serializable;
-import java.util.Collection;
-import java.util.List;
-import java.util.Map;
-
 /**
  *
  * @param <E> Entity class
  * @param <V> View class
  * @param <ID> Entity primary key
  */
+@RequiredArgsConstructor
 @Transactional(rollbackFor = BaseException.class)
-public abstract class BaseService<E extends IHasId<ID>, V extends IHasId<ID>, ID extends Serializable&Comparable<ID>> implements IService<E, V, ID> {
+public abstract class BaseService<E extends IHasId<ID>, V extends IHasId<ID>, ID extends Serializable&Comparable<ID>> {
 
-    @Autowired
-    protected BaseRepository<E, ID> repository;
-    @Autowired
-    protected Converter<E> converter;
-    @Autowired
-    protected MapperFacade mapperFacade;
-    @Autowired
-    protected CriteriaRepository criteriaRepository;
-    @Autowired
-    protected IValidator<E> validationService;
+    protected final BaseRepository<E, ID> repository;
+    protected final Converter<E> converter;
+    protected final MapperFacade mapperFacade;
+    protected final CriteriaRepository criteriaRepository;
+    protected final BaseValidator<E, ID> validationService;
 
-    @Override
     public E getById(ID id) throws BaseException {
-        return repository
-                .findById(id)
+        return repository.findById(id)
                 .orElseThrow(() -> new NoSuchEntityException("Немає об'єкту з таким ID"));
     }
 
-    @Override
     public Map<String, Object> getById(ID id, Collection<String> fields) throws BaseException {
         return converter.convert(getById(id), fields);
     }
 
-    @Override
     public List<E> getList(Criteria<E> criteria) throws BaseException {
-        List<E> entities = criteriaRepository.find(criteria);
-
-        if (entities.isEmpty())
-            throw new NoSuchEntityException("Немає об'єкту з таким критеріями пошуку");
-
-        return entities;
+        return criteriaRepository.find(criteria);
     }
 
-    @Override
     public List<Map<String, Object>> getList(Collection<String> fields, String restrict) throws BaseException {
         return converter.convert(getList(parse(restrict)), fields);
     }
 
-    @Override
     public ID create(V view) throws BaseException {
         E entity = newInstance();
 
@@ -81,17 +67,14 @@ public abstract class BaseService<E extends IHasId<ID>, V extends IHasId<ID>, ID
         return entity.getId();
     }
 
-    @Override
     public void postCreate(E entity) {
 
     }
 
-    @Override
     public void postCreateSaved(E entity) {
 
     }
 
-    @Override
     public boolean update(V view) throws BaseException {
         E entity = getById(view.getId());
 
@@ -102,22 +85,18 @@ public abstract class BaseService<E extends IHasId<ID>, V extends IHasId<ID>, ID
         return entity != null;
     }
 
-    @Override
     public E updateEntity(E entity) {
         return repository.saveAndFlush(entity);
     }
 
-    @Override
     public int count(String restrict) throws WrongRestrictionException {
         return count(parse(restrict));
     }
 
-    @Override
     public int count(Criteria<E> criteria){
         return criteriaRepository.count(criteria);
     }
 
-    @Override
     public boolean delete(ID id) throws BaseException {
         E entity = getById(id);
 
@@ -127,4 +106,7 @@ public abstract class BaseService<E extends IHasId<ID>, V extends IHasId<ID>, ID
         return true;
     }
 
+    protected abstract Criteria<E> parse(String restrict) throws WrongRestrictionException;
+
+    protected abstract E newInstance();
 }

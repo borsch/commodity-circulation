@@ -1,13 +1,23 @@
 package ua.net.kurpiak.commoditycirculation.pojo.entities;
 
-import org.hibernate.validator.constraints.NotEmpty;
-import ua.net.kurpiak.commoditycirculation.pojo.helpers.IHasId;
-
-import javax.persistence.*;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.Table;
+import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
-import java.util.Objects;
 
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+import ua.net.kurpiak.commoditycirculation.pojo.helpers.IHasId;
+
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
 @Entity
 @Table(name = "PRODUCTS")
 public class ProductEntity implements IHasId<Integer> {
@@ -57,89 +67,4 @@ public class ProductEntity implements IHasId<Integer> {
         this.id = id;
     }
 
-    public String getCode() {
-        return code;
-    }
-
-    public void setCode(String code) {
-        this.code = code;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public String getUnit() {
-        return unit;
-    }
-
-    public void setUnit(String unit) {
-        this.unit = unit;
-    }
-
-    public double getResidual() {
-        return residual;
-    }
-
-    public void setResidual(double residual) {
-        this.residual = residual;
-    }
-
-    public double getDefaultPurchasePrice() {
-        return defaultPurchasePrice;
-    }
-
-    public void setDefaultPurchasePrice(double defaultPurchasePrice) {
-        this.defaultPurchasePrice = defaultPurchasePrice;
-    }
-
-    public double getDefaultPurchasePriceUsd() {
-        return defaultPurchasePriceUsd;
-    }
-
-    public void setDefaultPurchasePriceUsd(double defaultPurchasePriceUsd) {
-        this.defaultPurchasePriceUsd = defaultPurchasePriceUsd;
-    }
-
-    public double getDefaultSalePrice() {
-        return defaultSalePrice;
-    }
-
-    public void setDefaultSalePrice(double defaultSalePrice) {
-        this.defaultSalePrice = defaultSalePrice;
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) {
-            return true;
-        }
-        if (o == null || getClass() != o.getClass()) {
-            return false;
-        }
-        ProductEntity entity = (ProductEntity) o;
-        return id == entity.id && Double.compare(entity.residual, residual) == 0
-               && Double.compare(entity.defaultPurchasePrice, defaultPurchasePrice) == 0
-               && Double.compare(entity.defaultPurchasePriceUsd, defaultPurchasePriceUsd) == 0
-               && Double.compare(entity.defaultSalePrice, defaultSalePrice) == 0 && Objects.equals(code, entity.code)
-               && Objects.equals(name, entity.name) && Objects.equals(unit, entity.unit);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects
-            .hash(id, code, name, unit, residual, defaultPurchasePrice, defaultPurchasePriceUsd, defaultSalePrice);
-    }
-
-    @Override
-    public String toString() {
-        return "ProductEntity{" + "id=" + id + ", code='" + code + '\'' + ", name='" + name + '\'' + ", unit='" + unit
-               + '\'' + ", residual=" + residual + ", defaultPurchasePrice=" + defaultPurchasePrice
-               + ", defaultPurchasePriceUsd=" + defaultPurchasePriceUsd + ", defaultSalePrice=" + defaultSalePrice
-               + '}';
-    }
 }

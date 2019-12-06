@@ -1,11 +1,24 @@
 package ua.net.kurpiak.commoditycirculation.pojo.entities;
 
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.Table;
+import javax.validation.constraints.NotNull;
+
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 import ua.net.kurpiak.commoditycirculation.pojo.helpers.IHasId;
 
-import javax.persistence.*;
-import javax.validation.constraints.NotNull;
-import java.util.Objects;
-
+@NoArgsConstructor
+@AllArgsConstructor
+@Data
 @Entity
 @Table(name = "INCOME")
 public class IncomeEntity implements IHasId<Integer> {
@@ -13,7 +26,7 @@ public class IncomeEntity implements IHasId<Integer> {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "ID")
-    private int id;
+    private Integer id;
 
     @NotNull(message = "Продукт є обов'язковим полем")
     @ManyToOne(fetch = FetchType.LAZY)
@@ -40,94 +53,4 @@ public class IncomeEntity implements IHasId<Integer> {
     @Column(name = "HAS_MORE")
     private boolean hasMore;
 
-    @Override
-    public Integer getId() {
-        return id;
-    }
-
-    @Override
-    public void setId(Integer id) {
-        this.id = id;
-    }
-
-    public ProductEntity getProduct() {
-        return product;
-    }
-
-    public void setProduct(ProductEntity product) {
-        this.product = product;
-    }
-
-    public IncomeOrderEntity getIncomeOrder() {
-        return incomeOrder;
-    }
-
-    public void setIncomeOrder(IncomeOrderEntity incomeOrder) {
-        this.incomeOrder = incomeOrder;
-    }
-
-    public double getResidual() {
-        return residual;
-    }
-
-    public void setResidual(double residual) {
-        this.residual = residual;
-    }
-
-    public double getAmount() {
-        return amount;
-    }
-
-    public void setAmount(double amount) {
-        this.amount = amount;
-    }
-
-    public double getIncomePrice() {
-        return incomePrice;
-    }
-
-    public void setIncomePrice(double incomePrice) {
-        this.incomePrice = incomePrice;
-    }
-
-    public double getIncomePriceUsd() {
-        return incomePriceUsd;
-    }
-
-    public void setIncomePriceUsd(double incomePriceUsd) {
-        this.incomePriceUsd = incomePriceUsd;
-    }
-
-    public boolean isHasMore() {
-        return hasMore;
-    }
-
-    public void setHasMore(boolean hasMore) {
-        this.hasMore = hasMore;
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) {
-            return true;
-        }
-        if (o == null || getClass() != o.getClass()) {
-            return false;
-        }
-        IncomeEntity entity = (IncomeEntity) o;
-        return id == entity.id && Double.compare(entity.residual, residual) == 0
-               && Double.compare(entity.amount, amount) == 0 && Double.compare(entity.incomePrice, incomePrice) == 0
-               && Double.compare(entity.incomePriceUsd, incomePriceUsd) == 0;
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(id, residual, amount, incomePrice, incomePriceUsd);
-    }
-
-    @Override
-    public String toString() {
-        return "IncomeEntity{" + "id=" + id + ", residual=" + residual + ", amount=" + amount + ", incomePrice="
-               + incomePrice + ", incomePriceUsd=" + incomePriceUsd + ", hasMore=" + hasMore + '}';
-    }
 }

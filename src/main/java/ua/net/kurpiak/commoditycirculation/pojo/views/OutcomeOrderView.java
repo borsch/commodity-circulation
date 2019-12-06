@@ -12,12 +12,9 @@ import ua.net.kurpiak.commoditycirculation.pojo.helpers.IHasId;
 public class OutcomeOrderView implements IHasId<Integer> {
 
     private Integer id;
-
     private String comment;
-
     @Singular
     private List<OutcomeView> outcomes;
-
     private String dateCreated;
 
 }

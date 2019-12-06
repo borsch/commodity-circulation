@@ -6,6 +6,7 @@ import static org.hamcrest.CoreMatchers.notNullValue;
 import org.junit.jupiter.api.Test;
 
 import com.github.springtestdbunit.annotation.DatabaseSetup;
+import com.github.springtestdbunit.annotation.DatabaseTearDown;
 import com.github.springtestdbunit.annotation.ExpectedDatabase;
 import com.github.springtestdbunit.assertion.DatabaseAssertionMode;
 
@@ -14,6 +15,7 @@ import ua.net.kurpiak.commoditycirculation.AbstractSpringBootTest;
 import ua.net.kurpiak.commoditycirculation.pojo.views.OutcomeOrderView;
 import ua.net.kurpiak.commoditycirculation.pojo.views.OutcomeView;
 
+@DatabaseTearDown("/tearDown.xml")
 class OutcomeOrderApiControllerTest extends AbstractSpringBootTest {
 
     @Test

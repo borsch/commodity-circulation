@@ -1,26 +1,36 @@
 package ua.net.kurpiak.commoditycirculation.persistence.criteria;
 
-import com.google.gson.ExclusionStrategy;
-import com.google.gson.FieldAttributes;
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import ua.net.kurpiak.commoditycirculation.exceptions.WrongRestrictionException;
-import ua.net.kurpiak.commoditycirculation.pojo.enums.OrderDirectionEnum;
+import java.util.List;
 
 import javax.persistence.EntityManager;
 import javax.persistence.Query;
-import javax.persistence.criteria.*;
-import java.util.List;
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Order;
+import javax.persistence.criteria.Predicate;
+import javax.persistence.criteria.Root;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
+import lombok.SneakyThrows;
+import ua.net.kurpiak.commoditycirculation.exceptions.WrongRestrictionException;
+import ua.net.kurpiak.commoditycirculation.pojo.enums.OrderDirectionEnum;
+
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public abstract class Criteria<T> {
+
+    private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
 
     private int offset;
     private int limit;
     private String order_by = "id";
     private OrderDirectionEnum order_direction = OrderDirectionEnum.ASC;
 
-
+    @JsonIgnore
     private String userCriteria;
+    @JsonIgnore
     private final Class<T> entityClass;
 
     public Criteria(Class<T> entityClass) {
@@ -79,7 +89,7 @@ public abstract class Criteria<T> {
         query.distinct(true);
         List<Predicate> predicates = query(root, cb);
         if (!predicates.isEmpty()) {
-            query.where(cb.and(predicates.toArray(new Predicate[predicates.size()])));
+            query.where(cb.and(predicates.toArray(new Predicate[0])));
         }
 
         query.orderBy(formOrder(cb, root));
@@ -136,8 +146,7 @@ public abstract class Criteria<T> {
         this.userCriteria = restriction;
 
         try {
-            Gson gson = new Gson();
-            T parsed = gson.fromJson(restriction, clazz);
+            T parsed = OBJECT_MAPPER.readValue(restriction, clazz);
 
             if (parsed.getLimit() > 0) {
                 setLimit(parsed.getLimit());
@@ -159,25 +168,10 @@ public abstract class Criteria<T> {
     }
 
     @Override
+    @SneakyThrows
     public String toString() {
-        if (userCriteria != null) {
-            return userCriteria;
-        } else {
-            String s = new GsonBuilder().setExclusionStrategies(new ExclusionStrategy() {
-                @Override
-                public boolean shouldSkipField(FieldAttributes f) {
-                    String name = f.getName();
-
-                    return name.equals("userCriteria") || name.equals("entityClass");
-                }
-
-                @Override
-                public boolean shouldSkipClass(Class<?> clazz) {
-                    return false;
-                }
-            }).create().toJson(this);
-
-            return s;
-        }
+        return userCriteria == null
+               ? OBJECT_MAPPER.writeValueAsString(this)
+               : userCriteria;
     }
 }

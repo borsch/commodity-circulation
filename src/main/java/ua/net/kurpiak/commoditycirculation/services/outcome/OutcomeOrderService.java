@@ -2,19 +2,22 @@ package ua.net.kurpiak.commoditycirculation.services.outcome;
 
 import java.time.LocalDate;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 
 import ma.glasnost.orika.CustomMapper;
+import ma.glasnost.orika.MapperFacade;
 import ma.glasnost.orika.MapperFactory;
 import ma.glasnost.orika.MappingContext;
+import ua.net.kurpiak.commoditycirculation.convertors.OutcomeOrderConverter;
 import ua.net.kurpiak.commoditycirculation.exceptions.BaseException;
 import ua.net.kurpiak.commoditycirculation.exceptions.WrongRestrictionException;
 import ua.net.kurpiak.commoditycirculation.exceptions.service_error.ValidationException;
 import ua.net.kurpiak.commoditycirculation.persistence.criteria.Criteria;
+import ua.net.kurpiak.commoditycirculation.persistence.criteria.CriteriaRepository;
 import ua.net.kurpiak.commoditycirculation.persistence.criteria.impl.OutcomeOrderCriteria;
+import ua.net.kurpiak.commoditycirculation.persistence.dao.OutcomeOrderRepository;
 import ua.net.kurpiak.commoditycirculation.pojo.entities.OutcomeOrderEntity;
 import ua.net.kurpiak.commoditycirculation.pojo.views.OutcomeOrderView;
 import ua.net.kurpiak.commoditycirculation.pojo.views.OutcomeView;
@@ -23,8 +26,14 @@ import ua.net.kurpiak.commoditycirculation.services.BaseService;
 @Component
 public class OutcomeOrderService extends BaseService<OutcomeOrderEntity, OutcomeOrderView, Integer> {
 
-    @Autowired
-    private OutcomeService outcomeService;
+    private final OutcomeService outcomeService;
+
+    public OutcomeOrderService(final OutcomeOrderRepository repository, final OutcomeOrderConverter converter, final MapperFacade mapperFacade,
+        final CriteriaRepository criteriaRepository, final OutcomeOrderValidator validationService, final OutcomeService outcomeService) {
+        super(repository, converter, mapperFacade, criteriaRepository, validationService);
+
+        this.outcomeService = outcomeService;
+    }
 
     @Override
     public Criteria<OutcomeOrderEntity> parse(final String restrict) throws WrongRestrictionException {

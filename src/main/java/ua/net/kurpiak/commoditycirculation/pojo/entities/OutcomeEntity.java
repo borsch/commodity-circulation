@@ -1,12 +1,20 @@
 package ua.net.kurpiak.commoditycirculation.pojo.entities;
 
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.Table;
+import javax.validation.constraints.NotNull;
+
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
 import ua.net.kurpiak.commoditycirculation.pojo.helpers.IHasId;
-
-import javax.persistence.*;
-import javax.validation.constraints.NotNull;
 
 @Data
 @ToString(exclude = "order")
@@ -18,7 +26,7 @@ public class OutcomeEntity implements IHasId<Integer> {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "ID")
-    private int id;
+    private Integer id;
 
     @NotNull(message = "Продукт є обов'язковим полем")
     @ManyToOne(fetch = FetchType.LAZY)
@@ -35,15 +43,5 @@ public class OutcomeEntity implements IHasId<Integer> {
 
     @Column(name = "SALE_PRICE")
     private double salePrice;
-
-    @Override
-    public Integer getId() {
-        return id;
-    }
-
-    @Override
-    public void setId(Integer id) {
-        this.id = id;
-    }
 
 }

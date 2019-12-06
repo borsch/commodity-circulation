@@ -7,11 +7,13 @@ import org.apache.http.HttpStatus;
 import org.junit.jupiter.api.Test;
 
 import com.github.springtestdbunit.annotation.DatabaseSetup;
+import com.github.springtestdbunit.annotation.DatabaseTearDown;
 
 import io.restassured.http.ContentType;
 import ua.net.kurpiak.commoditycirculation.AbstractSpringBootTest;
 
 @DatabaseSetup("/db/products.xml")
+@DatabaseTearDown("/tearDown.xml")
 class ProductApiControllerTest extends AbstractSpringBootTest {
 
     @Test
