@@ -8,7 +8,7 @@ import ua.net.kurpiak.commoditycirculation.config.DefaultMapperConfig;
 import ua.net.kurpiak.commoditycirculation.pojo.entities.OutcomeOrderEntity;
 import ua.net.kurpiak.commoditycirculation.pojo.views.OutcomeOrderView;
 
-@Mapper(config = DefaultMapperConfig.class)
+@Mapper(config = DefaultMapperConfig.class, uses = DefaultTypeMapper.class)
 public interface OutcomeOrderMapper extends ViewToEntityMapper<OutcomeOrderEntity, OutcomeOrderView> {
 
     @Override
@@ -16,7 +16,7 @@ public interface OutcomeOrderMapper extends ViewToEntityMapper<OutcomeOrderEntit
     @Mapping(target = "outcomes", ignore = true)
     @Mapping(target = "totalPrice", ignore = true)
     @Mapping(target = "totalProfit", ignore = true)
-    @Mapping(target = "dateCreated", ignore = true)
+    @Mapping(target = "dateCreated", source = "dateCreated", qualifiedByName = DefaultTypeMapper.MAP_DATE_OR_DEFAULT)
     @Mapping(target = "comment", source = "comment")
     OutcomeOrderEntity mapToEntity(OutcomeOrderView view);
 

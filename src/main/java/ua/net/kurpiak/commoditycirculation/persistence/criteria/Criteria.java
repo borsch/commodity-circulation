@@ -29,8 +29,6 @@ public abstract class Criteria<T> {
     private OrderDirectionEnum order_direction = OrderDirectionEnum.ASC;
 
     @JsonIgnore
-    private String userCriteria;
-    @JsonIgnore
     private final Class<T> entityClass;
 
     public Criteria(Class<T> entityClass) {
@@ -143,8 +141,6 @@ public abstract class Criteria<T> {
         if(restriction == null || restriction.isEmpty() || restriction.equals("{}"))
             return null;
 
-        this.userCriteria = restriction;
-
         try {
             T parsed = OBJECT_MAPPER.readValue(restriction, clazz);
 
@@ -170,8 +166,6 @@ public abstract class Criteria<T> {
     @Override
     @SneakyThrows
     public String toString() {
-        return userCriteria == null
-               ? OBJECT_MAPPER.writeValueAsString(this)
-               : userCriteria;
+        return OBJECT_MAPPER.writeValueAsString(this);
     }
 }

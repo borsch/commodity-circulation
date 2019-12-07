@@ -8,13 +8,13 @@ import ua.net.kurpiak.commoditycirculation.config.DefaultMapperConfig;
 import ua.net.kurpiak.commoditycirculation.pojo.entities.IncomeOrderEntity;
 import ua.net.kurpiak.commoditycirculation.pojo.views.IncomeOrderView;
 
-@Mapper(config = DefaultMapperConfig.class)
+@Mapper(config = DefaultMapperConfig.class, uses = DefaultTypeMapper.class)
 public interface IncomeOrderMapper extends ViewToEntityMapper<IncomeOrderEntity, IncomeOrderView> {
 
     @Override
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "incomes", ignore = true)
-    @Mapping(target = "dateCreated", ignore = true)
+    @Mapping(target = "dateCreated", source = "dateCreated", qualifiedByName = DefaultTypeMapper.MAP_DATE_OR_DEFAULT)
     @Mapping(target = "comment", source = "comment")
     IncomeOrderEntity mapToEntity(IncomeOrderView view);
 

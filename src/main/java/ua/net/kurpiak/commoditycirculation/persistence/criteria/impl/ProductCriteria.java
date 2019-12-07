@@ -1,16 +1,20 @@
 package ua.net.kurpiak.commoditycirculation.persistence.criteria.impl;
 
-import org.springframework.util.StringUtils;
-import ua.net.kurpiak.commoditycirculation.persistence.criteria.Criteria;
-import ua.net.kurpiak.commoditycirculation.exceptions.WrongRestrictionException;
-import ua.net.kurpiak.commoditycirculation.pojo.entities.ProductEntity;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
-import java.util.ArrayList;
-import java.util.List;
 
+import org.springframework.util.StringUtils;
+
+import lombok.Setter;
+import ua.net.kurpiak.commoditycirculation.exceptions.WrongRestrictionException;
+import ua.net.kurpiak.commoditycirculation.persistence.criteria.Criteria;
+import ua.net.kurpiak.commoditycirculation.pojo.entities.ProductEntity;
+
+@Setter
 public class ProductCriteria extends Criteria<ProductEntity> {
 
     private String query;

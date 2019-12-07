@@ -1,5 +1,6 @@
 package ua.net.kurpiak.commoditycirculation.pojo.views;
 
+import java.time.LocalDate;
 import java.util.List;
 
 import lombok.Builder;
@@ -15,6 +16,6 @@ public class OutcomeOrderView implements IHasId<Integer> {
     private String comment;
     @Singular
     private List<OutcomeView> outcomes;
-    private String dateCreated;
+    private LocalDate dateCreated;
 
 }
