@@ -1,19 +1,13 @@
 package ua.net.kurpiak.commoditycirculation.services.outcome;
 
-import java.time.LocalDate;
-
 import org.springframework.stereotype.Component;
 import org.springframework.util.CollectionUtils;
-import org.springframework.util.StringUtils;
 
-import ma.glasnost.orika.CustomMapper;
-import ma.glasnost.orika.MapperFacade;
-import ma.glasnost.orika.MapperFactory;
-import ma.glasnost.orika.MappingContext;
 import ua.net.kurpiak.commoditycirculation.convertors.OutcomeOrderConverter;
 import ua.net.kurpiak.commoditycirculation.exceptions.BaseException;
 import ua.net.kurpiak.commoditycirculation.exceptions.WrongRestrictionException;
 import ua.net.kurpiak.commoditycirculation.exceptions.service_error.ValidationException;
+import ua.net.kurpiak.commoditycirculation.mapper.OutcomeOrderMapper;
 import ua.net.kurpiak.commoditycirculation.persistence.criteria.Criteria;
 import ua.net.kurpiak.commoditycirculation.persistence.criteria.CriteriaRepository;
 import ua.net.kurpiak.commoditycirculation.persistence.criteria.impl.OutcomeOrderCriteria;
@@ -28,9 +22,9 @@ public class OutcomeOrderService extends BaseService<OutcomeOrderEntity, Outcome
 
     private final OutcomeService outcomeService;
 
-    public OutcomeOrderService(final OutcomeOrderRepository repository, final OutcomeOrderConverter converter, final MapperFacade mapperFacade,
+    public OutcomeOrderService(final OutcomeOrderRepository repository, final OutcomeOrderConverter converter, final OutcomeOrderMapper outcomeOrderMapper,
         final CriteriaRepository criteriaRepository, final OutcomeOrderValidator validationService, final OutcomeService outcomeService) {
-        super(repository, converter, mapperFacade, criteriaRepository, validationService);
+        super(repository, converter, outcomeOrderMapper, criteriaRepository, validationService);
 
         this.outcomeService = outcomeService;
     }
@@ -38,11 +32,6 @@ public class OutcomeOrderService extends BaseService<OutcomeOrderEntity, Outcome
     @Override
     public Criteria<OutcomeOrderEntity> parse(final String restrict) throws WrongRestrictionException {
         return new OutcomeOrderCriteria(restrict);
-    }
-
-    @Override
-    public OutcomeOrderEntity newInstance() {
-        return new OutcomeOrderEntity();
     }
 
     @Override
@@ -62,23 +51,4 @@ public class OutcomeOrderService extends BaseService<OutcomeOrderEntity, Outcome
         return id;
     }
 
-    public static void initMapperFactory(MapperFactory mapperFactory) {
-        mapperFactory.classMap(OutcomeOrderEntity.class, OutcomeOrderView.class)
-            .field("comment", "comment").mapNulls(false).mapNullsInReverse(false)
-            .customize(new CustomMapper<OutcomeOrderEntity, OutcomeOrderView>() {
-                @Override
-                public void mapBtoA(OutcomeOrderView view, OutcomeOrderEntity entity, MappingContext context) {
-                    if (!StringUtils.isEmpty(view.getDateCreated())) {
-                        try {
-                            entity.setDateCreated(LocalDate.parse(view.getDateCreated()));
-                        } catch (Exception e) {
-                            throw new ValidationException("income order date", "Дата продажу має неправельний формат");
-                        }
-                    } else {
-                        entity.setDateCreated(LocalDate.now());
-                    }
-                }
-            })
-            .register();
-    }
 }

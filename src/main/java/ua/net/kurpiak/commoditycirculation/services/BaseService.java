@@ -8,12 +8,12 @@ import java.util.Map;
 import org.springframework.transaction.annotation.Transactional;
 
 import lombok.RequiredArgsConstructor;
-import ma.glasnost.orika.MapperFacade;
 import ua.net.kurpiak.commoditycirculation.convertors.Converter;
 import ua.net.kurpiak.commoditycirculation.exceptions.BaseException;
 import ua.net.kurpiak.commoditycirculation.exceptions.WrongRestrictionException;
 import ua.net.kurpiak.commoditycirculation.exceptions.not_found.NoSuchEntityException;
 import ua.net.kurpiak.commoditycirculation.exceptions.service_error.ServiceErrorException;
+import ua.net.kurpiak.commoditycirculation.mapper.ViewToEntityMapper;
 import ua.net.kurpiak.commoditycirculation.persistence.criteria.Criteria;
 import ua.net.kurpiak.commoditycirculation.persistence.criteria.CriteriaRepository;
 import ua.net.kurpiak.commoditycirculation.persistence.dao.BaseRepository;
@@ -31,7 +31,7 @@ public abstract class BaseService<E extends IHasId<ID>, V extends IHasId<ID>, ID
 
     protected final BaseRepository<E, ID> repository;
     protected final Converter<E> converter;
-    protected final MapperFacade mapperFacade;
+    protected final ViewToEntityMapper<E, V> viewToEntityMapper;
     protected final CriteriaRepository criteriaRepository;
     protected final BaseValidator<E, ID> validationService;
 
@@ -53,9 +53,7 @@ public abstract class BaseService<E extends IHasId<ID>, V extends IHasId<ID>, ID
     }
 
     public ID create(V view) throws BaseException {
-        E entity = newInstance();
-
-        mapperFacade.map(view, entity);
+        E entity = viewToEntityMapper.mapToEntity(view);
         postCreate(entity);
 
         validationService.validForCreate(entity);
@@ -78,7 +76,7 @@ public abstract class BaseService<E extends IHasId<ID>, V extends IHasId<ID>, ID
     public boolean update(V view) throws BaseException {
         E entity = getById(view.getId());
 
-        mapperFacade.map(view, entity);
+        viewToEntityMapper.updateEntity(entity, view);
         validationService.validForUpdate(entity);
         entity = repository.saveAndFlush(entity);
 
@@ -107,6 +105,4 @@ public abstract class BaseService<E extends IHasId<ID>, V extends IHasId<ID>, ID
     }
 
     protected abstract Criteria<E> parse(String restrict) throws WrongRestrictionException;
-
-    protected abstract E newInstance();
 }

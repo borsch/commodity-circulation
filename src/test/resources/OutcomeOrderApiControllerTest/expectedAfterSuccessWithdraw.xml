@@ -7,6 +7,6 @@
     <income id="1" product_id="1" income_order_id="1" residual="0" amount="10" income_price="10" income_price_usd="1" has_more="false" />
     <income id="2" product_id="1" income_order_id="2" residual="9" amount="14" income_price="10" income_price_usd="1" has_more="true" />
 
-    <outcome_order id="1" date_created="2019-12-06" total_price="0" total_profit="0" />
+    <outcome_order id="1" total_price="0" total_profit="0" />
     <outcome id="1" product_id="1" outcome_order_id="1" amount="15" sale_price="10" />
 </dataset>

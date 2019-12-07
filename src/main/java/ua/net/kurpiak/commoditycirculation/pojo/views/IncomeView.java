@@ -9,7 +9,6 @@ public class IncomeView implements IHasId<Integer> {
     private Integer id;
     private Integer productId;
     private Integer incomeOrderId;
-    private double residual;
     private double amount;
     private double incomePrice;
     private double incomePriceUsd;
