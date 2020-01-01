@@ -12,8 +12,8 @@ public class IndexController {
         return "index";
     }
 
-    @RequestMapping(value = "/in-out", method = RequestMethod.GET)
+    @RequestMapping(value = "/income", method = RequestMethod.GET)
     public String inOut() {
-        return "in_out";
+        return "income";
     }
 }

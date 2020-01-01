@@ -12,7 +12,7 @@ public class ProductView implements IHasId<Integer> {
     private String code;
     private String name;
     private String unit;
-    private double residual;
+    private Double residual;
     private double defaultPurchasePrice;
     private double defaultPurchasePriceUsd;
     private double defaultSalePrice;

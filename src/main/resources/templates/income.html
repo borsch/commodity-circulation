@@ -2,31 +2,29 @@
 <html ng-app="in_out" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-    <title>Прихід-розхід</title>
+    <title>Прихід</title>
 </head>
 <body ng-controller="in_out">
     <th:block th:replace="common::header" />
     <div class="row" style="width: 95%; margin-left: 10px;">
-        <div class="col-md-6">
-            <div class="row text-center">
-                <div class="col-md-10">
-                    <h3>Прихід товару</h3>
-                </div>
-                <div class="col-md-2" style="line-height: 4.5">
-                    <button class="btn btn-success" href="#addIncome" ng-click="before_product_edit_model()" data-toggle="modal">Форма приходу</button>
-                </div>
+        <div class="row text-center">
+            <div class="col-md-10">
+                <h3>Прихід товару</h3>
             </div>
-            <div ng-repeat="order in incomeOrdersList | orderBy:['dateCreated']:true" style="margin-bottom: 10px; cursor: pointer; background: #d1d0db; padding: 7px;" ng-click="previewIncomeOrder(order.id)">
-                <div class="row">
-                    <div class="col-sm-2">
-                        &#35;{{order.id}}
-                    </div>
-                    <div class="col-sm-6">
-                        {{order.dateCreated_f}}
-                    </div>
-                    <div>
-                        {{order.comment}}
-                    </div>
+            <div class="col-md-2" style="line-height: 4.5">
+                <button class="btn btn-success" href="#addIncome" ng-click="before_product_edit_model()" data-toggle="modal">Форма приходу</button>
+            </div>
+        </div>
+        <div ng-repeat="order in incomeOrdersList | orderBy:['dateCreated']:true" style="margin-bottom: 10px; cursor: pointer; background: #d1d0db; padding: 7px;" ng-click="previewIncomeOrder(order.id)">
+            <div class="row">
+                <div class="col-sm-2">
+                    &#35;{{order.id}}
+                </div>
+                <div class="col-sm-6">
+                    {{order.dateCreated_f}}
+                </div>
+                <div>
+                    {{order.comment}}
                 </div>
             </div>
         </div>
@@ -323,7 +321,9 @@
 									if (!added) {
 										$scope.income_order_body.incomes.push({
 											productId: product.id,
-											product: product
+											product: product,
+                                            incomePrice: product.defaultPurchasePrice,
+                                            incomePriceUsd: product.defaultPurchasePriceUsd
 										});
 									} else {
 										$scope.income_order_message = 'Цей товар вже додано';

@@ -25,7 +25,7 @@ public class ProductEntity implements IHasId<Integer> {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "ID")
-    private int id;
+    private Integer id;
 
     @NotEmpty(message = "Код продукту є обов'язковим")
     @NotNull(message = "Код продукту є обов'язковим")
@@ -56,15 +56,5 @@ public class ProductEntity implements IHasId<Integer> {
 
     @Column(name = "DEFAULT_SALE_PRICE")
     private double defaultSalePrice;
-
-    @Override
-    public Integer getId() {
-        return id;
-    }
-
-    @Override
-    public void setId(Integer id) {
-        this.id = id;
-    }
 
 }
