@@ -44,4 +44,7 @@ public class OutcomeEntity implements IHasId<Integer> {
     @Column(name = "SALE_PRICE")
     private double salePrice;
 
+    @Column(name = "PROFIT")
+    private double profit;
+
 }

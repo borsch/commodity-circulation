@@ -13,6 +13,7 @@ import lombok.Setter;
 import ua.net.kurpiak.commoditycirculation.exceptions.WrongRestrictionException;
 import ua.net.kurpiak.commoditycirculation.persistence.criteria.Criteria;
 import ua.net.kurpiak.commoditycirculation.pojo.entities.ProductEntity;
+import ua.net.kurpiak.commoditycirculation.pojo.entities.ProductEntity_;
 
 @Setter
 public class ProductCriteria extends Criteria<ProductEntity> {
@@ -39,7 +40,10 @@ public class ProductCriteria extends Criteria<ProductEntity> {
         if (!StringUtils.isEmpty(query)) {
             String queryLike = '%' + query + '%';
 
-            predicates.add(cb.or(cb.like(root.get("code"), queryLike), cb.like(root.get("name"), queryLike)));
+            predicates.add(cb.or(
+                cb.like(root.get(ProductEntity_.code), queryLike),
+                cb.like(root.get(ProductEntity_.name), queryLike)
+            ));
         }
 
         return predicates;

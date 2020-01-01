@@ -59,25 +59,31 @@ public class IncomeService extends BaseService<IncomeEntity, IncomeView, Integer
         productRepository.save(product);
     }
 
-    public void handleWithdraw(ProductEntity product, double amount) {
+    public double handleWithdraw(ProductEntity product, double amount, double salePrice) {
         List<IncomeEntity> incomes = incomeRepository.findByProductWithHasMore(product.getId());
         log.info("Found {} income(s) for product {}({})\n{}", incomes.size(), product.getName(), product.getCode(), incomes);
 
         validateWithdrawAmount(incomes, product, amount);
+        double profit = 0;
 
-        for (IncomeEntity income : incomes) {
+        for (final IncomeEntity income : incomes) {
             if (amount == 0) {
                 break;
             }
 
-            double residual = income.getResidual() - Math.min(income.getResidual(), amount);
-            amount -= Math.min(income.getResidual(), amount);
+            final double withdrawal = Math.min(income.getResidual(), amount);
+            final double residual = income.getResidual() - withdrawal;
 
             income.setResidual(residual);
             income.setHasMore(residual > 0);
+
+            profit += withdrawal * (salePrice - income.getIncomePrice());
+            amount -= withdrawal;
         }
 
         incomeRepository.saveAll(incomes);
+
+        return profit;
     }
 
     private void validateWithdrawAmount(List<IncomeEntity> incomes, ProductEntity product, double wantedAmount) {

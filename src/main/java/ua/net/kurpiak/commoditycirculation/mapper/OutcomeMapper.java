@@ -19,6 +19,7 @@ public interface OutcomeMapper extends ViewToEntityMapper<OutcomeEntity, Outcome
     @Mapping(target = "amount", source = "amount")
     @Mapping(target = "product", source = "productId")
     @Mapping(target = "salePrice", source = "salePrice")
+    @Mapping(target = "profit", ignore = true)
     OutcomeEntity mapToEntity(OutcomeView view);
 
     @Override
@@ -27,5 +28,6 @@ public interface OutcomeMapper extends ViewToEntityMapper<OutcomeEntity, Outcome
     @Mapping(target = "product", ignore = true)
     @Mapping(target = "amount", source = "amount")
     @Mapping(target = "salePrice", source = "salePrice")
+    @Mapping(target = "profit", ignore = true)
     void updateEntity(@MappingTarget OutcomeEntity entity, OutcomeView view);
 }

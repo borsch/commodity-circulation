@@ -1,12 +1,17 @@
 <dataset>
-    <products id="1" code="1" name="product1" unit="meter" residual="10" default_purchase_price="10" default_purchase_price_usd="1" default_sale_price="20"/>
+    <products id="1" code="1" name="product1" unit="meter" residual="9.0" default_purchase_price="10" default_purchase_price_usd="1" default_sale_price="20"/>
+    <products id="2" code="2" name="product2" unit="meter" residual="4" default_purchase_price="10" default_purchase_price_usd="1" default_sale_price="20"/>
 
     <income_order id="1" date_created="2019-01-01" />
     <income_order id="2" date_created="2019-01-02" />
 
     <income id="1" product_id="1" income_order_id="1" residual="0" amount="10" income_price="10" income_price_usd="1" has_more="false" />
-    <income id="2" product_id="1" income_order_id="2" residual="9" amount="14" income_price="10" income_price_usd="1" has_more="true" />
+    <income id="2" product_id="2" income_order_id="1" residual="0" amount="11" income_price="11" income_price_usd="1" has_more="false" />
 
-    <outcome_order id="1" date_created="2019-01-01" total_price="0" total_profit="0" />
-    <outcome id="1" product_id="1" outcome_order_id="1" amount="15" sale_price="10" />
+    <income id="3" product_id="1" income_order_id="2" residual="9" amount="14" income_price="10" income_price_usd="1" has_more="true" />
+    <income id="4" product_id="2" income_order_id="2" residual="4" amount="8" income_price="12.5" income_price_usd="1" has_more="true" />
+
+    <outcome_order id="1000" date_created="2019-01-01" total_price="405" total_profit="84" />
+    <outcome id="1001" product_id="1" outcome_order_id="1000" amount="15" sale_price="12" profit="30" />
+    <outcome id="1002" product_id="2" outcome_order_id="1000" amount="15" sale_price="15" profit="54" />
 </dataset>

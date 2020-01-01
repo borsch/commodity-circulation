@@ -37,8 +37,15 @@ class OutcomeOrderApiControllerTest extends AbstractSpringBootTest {
                 OutcomeView.builder()
                     .amount(15)
                     .productId(1)
-                    .salePrice(10)
+                    .salePrice(12)
                 .build()
+            )
+            .outcome(
+                OutcomeView.builder()
+                    .amount(15)
+                    .productId(2)
+                    .salePrice(15)
+                    .build()
             )
             .build();
 

@@ -13,7 +13,9 @@ import lombok.Setter;
 import ua.net.kurpiak.commoditycirculation.exceptions.WrongRestrictionException;
 import ua.net.kurpiak.commoditycirculation.persistence.criteria.Criteria;
 import ua.net.kurpiak.commoditycirculation.pojo.entities.IncomeEntity;
+import ua.net.kurpiak.commoditycirculation.pojo.entities.IncomeEntity_;
 import ua.net.kurpiak.commoditycirculation.pojo.entities.ProductEntity;
+import ua.net.kurpiak.commoditycirculation.pojo.entities.ProductEntity_;
 
 @Getter
 @Setter
@@ -41,8 +43,8 @@ public class IncomeCriteria extends Criteria<IncomeEntity> {
         List<Predicate> predicates = new ArrayList<>();
 
         if (productId != null) {
-            Join<IncomeEntity, ProductEntity> productJoin = root.join("product");
-            predicates.add(cb.equal(productJoin.get("id"), productId));
+            Join<IncomeEntity, ProductEntity> productJoin = root.join(IncomeEntity_.product);
+            predicates.add(cb.equal(productJoin.get(ProductEntity_.id), productId));
         }
 
         if (hasMore != null) {

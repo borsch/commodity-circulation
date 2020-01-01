@@ -38,7 +38,7 @@ public abstract class BaseApiController<E extends IHasId<I>, V extends IHasId<I>
     }
 
     @RequestMapping(
-            value = "/",
+            value = { "", "/" },
             method = RequestMethod.GET
     )
     public @ResponseBody
@@ -63,7 +63,7 @@ public abstract class BaseApiController<E extends IHasId<I>, V extends IHasId<I>
     }
 
     @RequestMapping(
-            value = "/",
+            value = { "", "/" },
             method = RequestMethod.PUT
     )
     public
@@ -76,7 +76,7 @@ public abstract class BaseApiController<E extends IHasId<I>, V extends IHasId<I>
     }
 
     @RequestMapping(
-            value = "/",
+            value = { "", "/" },
             method = RequestMethod.POST
     )
     public

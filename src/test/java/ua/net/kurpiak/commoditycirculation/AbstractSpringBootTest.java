@@ -24,6 +24,7 @@ import io.restassured.RestAssured;
     DependencyInjectionTestExecutionListener.class,
     DirtiesContextTestExecutionListener.class,
     DirtiesContextBeforeModesTestExecutionListener.class,
+    SequenceResetTestExecutionListener.class,
     DbUnitTestExecutionListener.class,
     TransactionalTestExecutionListener.class,
     MockitoTestExecutionListener.class

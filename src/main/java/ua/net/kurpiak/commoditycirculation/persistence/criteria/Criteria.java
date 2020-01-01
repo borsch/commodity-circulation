@@ -14,10 +14,14 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import lombok.Getter;
+import lombok.Setter;
 import lombok.SneakyThrows;
 import ua.net.kurpiak.commoditycirculation.exceptions.WrongRestrictionException;
 import ua.net.kurpiak.commoditycirculation.pojo.enums.OrderDirectionEnum;
 
+@Getter
+@Setter
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public abstract class Criteria<T> {
 
@@ -33,38 +37,6 @@ public abstract class Criteria<T> {
 
     public Criteria(Class<T> entityClass) {
         this.entityClass = entityClass;
-    }
-
-    public int getOffset() {
-        return offset;
-    }
-
-    public void setOffset(int offset) {
-        this.offset = offset;
-    }
-
-    public int getLimit() {
-        return limit;
-    }
-
-    public void setLimit(int limit) {
-        this.limit = limit;
-    }
-
-    public String getOrder_by() {
-        return order_by;
-    }
-
-    public void setOrder_by(String order_by) {
-        this.order_by = order_by;
-    }
-
-    public OrderDirectionEnum getOrder_direction() {
-        return order_direction;
-    }
-
-    public void setOrder_direction(OrderDirectionEnum order_direction) {
-        this.order_direction = order_direction;
     }
 
     /**
@@ -104,7 +76,7 @@ public abstract class Criteria<T> {
         query.distinct(true);
         List<Predicate> predicates = query(root, cb);
         if (!predicates.isEmpty()) {
-            query.where(cb.and(predicates.toArray(new Predicate[predicates.size()])));
+            query.where(cb.and(predicates.toArray(new Predicate[0])));
         }
 
         query.orderBy(formOrder(cb, root));
@@ -137,12 +109,12 @@ public abstract class Criteria<T> {
      * @return
      * @throws WrongRestrictionException - if passed wrong json format
      */
-    protected <T extends Criteria> T parse(String restriction, Class<T> clazz) throws WrongRestrictionException {
+    protected <E extends Criteria<T>> E parse(String restriction, Class<E> clazz) throws WrongRestrictionException {
         if(restriction == null || restriction.isEmpty() || restriction.equals("{}"))
             return null;
 
         try {
-            T parsed = OBJECT_MAPPER.readValue(restriction, clazz);
+            E parsed = OBJECT_MAPPER.readValue(restriction, clazz);
 
             if (parsed.getLimit() > 0) {
                 setLimit(parsed.getLimit());
