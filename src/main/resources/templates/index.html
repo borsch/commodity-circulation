@@ -166,15 +166,12 @@
 								$scope.save_product_message = 'Збережено';
 
 								var id = $scope.edit_product.id || response.result;
-
-								if ($scope.edit_product.id) {
-
-                                } else {
+								if (!$scope.edit_product.id) {
 									$scope.products.push({
                                         id: id
                                     });
+                                    $scope.edit_product.id = id;
                                 }
-
                                 loadProduct($scope, id);
 							} else {
 								$scope.save_product_message = response.error.message;
