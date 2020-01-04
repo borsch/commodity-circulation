@@ -5,7 +5,9 @@ import static org.springframework.util.CollectionUtils.isEmpty;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import lombok.extern.slf4j.Slf4j;
 import ua.net.kurpiak.commoditycirculation.convertors.IncomeOrderConverter;
+import ua.net.kurpiak.commoditycirculation.exceptions.ActionNotAllowed;
 import ua.net.kurpiak.commoditycirculation.exceptions.BaseException;
 import ua.net.kurpiak.commoditycirculation.exceptions.service_error.ValidationException;
 import ua.net.kurpiak.commoditycirculation.mapper.IncomeOrderMapper;
@@ -18,6 +20,7 @@ import ua.net.kurpiak.commoditycirculation.pojo.views.IncomeOrderView;
 import ua.net.kurpiak.commoditycirculation.pojo.views.IncomeView;
 import ua.net.kurpiak.commoditycirculation.services.BaseService;
 
+@Slf4j
 @Service
 @Transactional(rollbackFor = BaseException.class)
 public class IncomeOrderService extends BaseService<IncomeOrderEntity, IncomeOrderView, Integer> {
@@ -38,8 +41,11 @@ public class IncomeOrderService extends BaseService<IncomeOrderEntity, IncomeOrd
 
     @Override
     public Integer create(IncomeOrderView view) throws BaseException {
-        if (isEmpty(view.getIncomes()))
+        log.info("Create new income order: {}", view);
+
+        if (isEmpty(view.getIncomes())) {
             throw new ValidationException("income order", "Виберіть хоча б одну позицію");
+        }
 
         Integer id = super.create(view);
 
@@ -50,5 +56,17 @@ public class IncomeOrderService extends BaseService<IncomeOrderEntity, IncomeOrd
         }
 
         return id;
+    }
+
+    @Override
+    public boolean update(final IncomeOrderView view) throws BaseException {
+        log.error("Try to update income order: {}", view);
+        throw new ActionNotAllowed("Не можна видаляти замовлення");
+    }
+
+    @Override
+    public boolean delete(final Integer id) throws BaseException {
+        log.error("Try to delete income order: {}", id);
+        throw new ActionNotAllowed("Не можна видаляти замовлення");
     }
 }

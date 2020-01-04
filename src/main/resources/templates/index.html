@@ -150,13 +150,7 @@
             });
 
         	$scope.before_product_edit_model = function(product) {
-        		if (product) {
-					$scope.edit_product = angular.copy(product);
-                } else {
-					$scope.edit_product = {
-						residual: 0
-                    };
-				}
+                $scope.edit_product = product ? angular.copy(product) : { };
             };
 
             $scope.save_product = function() {

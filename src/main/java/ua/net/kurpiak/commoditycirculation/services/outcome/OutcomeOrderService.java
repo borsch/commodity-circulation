@@ -5,7 +5,9 @@ import java.util.List;
 import org.springframework.stereotype.Component;
 import org.springframework.util.CollectionUtils;
 
+import lombok.extern.slf4j.Slf4j;
 import ua.net.kurpiak.commoditycirculation.convertors.OutcomeOrderConverter;
+import ua.net.kurpiak.commoditycirculation.exceptions.ActionNotAllowed;
 import ua.net.kurpiak.commoditycirculation.exceptions.BaseException;
 import ua.net.kurpiak.commoditycirculation.exceptions.WrongRestrictionException;
 import ua.net.kurpiak.commoditycirculation.exceptions.service_error.ServiceErrorException;
@@ -22,6 +24,7 @@ import ua.net.kurpiak.commoditycirculation.pojo.views.OutcomeOrderView;
 import ua.net.kurpiak.commoditycirculation.pojo.views.OutcomeView;
 import ua.net.kurpiak.commoditycirculation.services.BaseService;
 
+@Slf4j
 @Component
 public class OutcomeOrderService extends BaseService<OutcomeOrderEntity, OutcomeOrderView, Integer> {
 
@@ -41,6 +44,8 @@ public class OutcomeOrderService extends BaseService<OutcomeOrderEntity, Outcome
 
     @Override
     public Integer create(final OutcomeOrderView view) throws BaseException {
+        log.info("Create new outcome order: {}", view);
+
         if (CollectionUtils.isEmpty(view.getOutcomes())) {
             throw new ValidationException("outcomes", "Потрібно вибрати хоча б один товар до продажу");
         }
@@ -55,6 +60,18 @@ public class OutcomeOrderService extends BaseService<OutcomeOrderEntity, Outcome
         enrichTotalFieldsOfOrder(orderId);
 
         return orderId;
+    }
+
+    @Override
+    public boolean update(final OutcomeOrderView view) throws BaseException {
+        log.error("Try to update outcome order: {}", view);
+        throw new ActionNotAllowed("Не можна редагувати замовлення");
+    }
+
+    @Override
+    public boolean delete(final Integer id) throws BaseException {
+        log.error("Try to delete outcome order: {}", id);
+        throw new ActionNotAllowed("Не можна видалити замовлення");
     }
 
     private void enrichTotalFieldsOfOrder(final int orderId) {
