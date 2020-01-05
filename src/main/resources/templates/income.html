@@ -34,7 +34,7 @@
                     <td>
                         {{order.dateCreated_f}}
                     </td>
-                    <td>
+                    <td style="white-space: pre-line;">
                         {{order.comment}}
                     </td>
                     <td>
@@ -80,6 +80,7 @@
                                 <th>Кількість</th>
                                 <th>Ціна за одиницю в гривні</th>
                                 <th>Ціна за одиницю в доларах</th>
+                                <th></th>
                             </tr>
                         </thead>
                         <tbody>
@@ -109,12 +110,16 @@
                                         <label class="col-sm-5" style="font-size: 23px;"> / {{income.product.unit}}</label>
                                     </div>
                                 </td>
+                                <td>
+                                    <button class="btn btn-success" ng-click="removeIncomeIncome($index)">Прибрати</button>
+                                </td>
                             </tr>
                             <tr>
                                 <td></td>
                                 <td></td>
                                 <td><strong>До сплати: </strong>{{totalToPay('incomePrice')}} грн</td>
                                 <td><strong>До сплати: </strong>{{totalToPay('incomePriceUsd')}} дол</td>
+                                <td></td>
                             </tr>
                         </tbody>
                     </table>
@@ -186,7 +191,7 @@
                         </tbody>
                     </table>
                     <div class="row">
-                        <div class="form-group col-sm-7">
+                        <div class="form-group col-sm-7" style="white-space: pre-line;">
                             <label>Коментар до замовлення:</label>
                             {{income_order_preview.comment}}
                         </div>
@@ -280,6 +285,10 @@
                 return total;
             };
 
+            $scope.removeIncomeIncome = function(index) {
+                $scope.income_order_body.incomes.splice(index, 1);
+            };
+
             incomeAutoComplete($scope);
         });
 
@@ -307,7 +316,7 @@
 			Ajax.get({
                 url: '/api/orders/income/' + id,
                 data: {
-                	fields: 'id,comment,dateCreated,incomesInfo'
+                	fields: 'id,comment,dateCreated,totalPrice,totalPriceUsd,incomesInfo'
                 },
                 success: function(response) {
                 	$scope.$apply(function(){
@@ -365,7 +374,8 @@
 											productId: product.id,
 											product: product,
                                             incomePrice: product.defaultPurchasePrice,
-                                            incomePriceUsd: product.defaultPurchasePriceUsd
+                                            incomePriceUsd: product.defaultPurchasePriceUsd,
+                                            amount: 0
 										});
 									} else {
 										$scope.income_order_message = 'Цей товар вже додано';

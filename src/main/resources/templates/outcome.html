@@ -34,7 +34,7 @@
                     <td>
                         {{order.dateCreated_f}}
                     </td>
-                    <td>
+                    <td style="white-space: pre-line;">
                         {{order.comment}}
                     </td>
                     <td>
@@ -80,6 +80,7 @@
                                 <th>Кількість</th>
                                 <th>Доступно</th>
                                 <th>Ціна за одиницю в гривні</th>
+                                <th></th>
                             </tr>
                         </thead>
                         <tbody>
@@ -102,12 +103,16 @@
                                         <label class="col-sm-5" style="font-size: 23px;"> грн/{{outcome.product.unit}}</label>
                                     </div>
                                 </td>
+                                <td>
+                                    <button class="btn btn-success" ng-click="removeOutcomeIncome($index)">Прибрати</button>
+                                </td>
                             </tr>
                         <tr>
                             <td></td>
                             <td></td>
                             <td></td>
                             <td><strong>До сплати: </strong>{{totalToPay()}} грн</td>
+                            <td></td>
                         </tr>
                         </tbody>
                     </table>
@@ -183,7 +188,7 @@
                         </tbody>
                     </table>
                     <div class="row">
-                        <div class="form-group col-sm-7">
+                        <div class="form-group col-sm-7" style="white-space: pre-line;">
                             <label>Коментар до замовлення:</label>
                             {{outcome_order_preview.comment}}
                         </div>
@@ -273,6 +278,10 @@
                     }
                 });
                 return total;
+            };
+
+            $scope.removeOutcomeIncome = function(index) {
+                $scope.outcome_order_body.outcomes.splice(index, 1);
             };
 
             outcomeAutoComplete($scope);
