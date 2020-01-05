@@ -17,6 +17,8 @@ public class Fields {
     public static final class IncomeOrder {
         public static final String DATE_CREATED = "dateCreated";
         public static final String COMMENT = "comment";
+        public static final String TOTAL_PRICE = "totalPrice";
+        public static final String TOTAL_PRICE_USD = "totalPriceUsd";
     }
 
     public static final class OutcomeOrder {

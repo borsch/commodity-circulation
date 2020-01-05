@@ -3,6 +3,8 @@ package ua.net.kurpiak.commoditycirculation.convertors;
 import static ua.net.kurpiak.commoditycirculation.convertors.Fields.ID;
 import static ua.net.kurpiak.commoditycirculation.convertors.Fields.IncomeOrder.COMMENT;
 import static ua.net.kurpiak.commoditycirculation.convertors.Fields.IncomeOrder.DATE_CREATED;
+import static ua.net.kurpiak.commoditycirculation.convertors.Fields.IncomeOrder.TOTAL_PRICE;
+import static ua.net.kurpiak.commoditycirculation.convertors.Fields.IncomeOrder.TOTAL_PRICE_USD;
 import static ua.net.kurpiak.commoditycirculation.convertors.Fields.Product.CODE;
 import static ua.net.kurpiak.commoditycirculation.convertors.Fields.Product.INCOMES_INFO;
 import static ua.net.kurpiak.commoditycirculation.convertors.Fields.Product.NAME;
@@ -51,6 +53,10 @@ public class IncomeOrderConverter extends Converter<IncomeOrderEntity> {
 
             map.put(INCOMES_INFO, incomes);
         }
+        if (fields.contains(TOTAL_PRICE))
+            map.put(TOTAL_PRICE, object.getTotalPrice());
+        if (fields.contains(TOTAL_PRICE_USD))
+            map.put(TOTAL_PRICE_USD, object.getTotalPriceUsd());
 
         return map;
     }

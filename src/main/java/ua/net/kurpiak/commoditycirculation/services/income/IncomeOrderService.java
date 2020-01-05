@@ -49,11 +49,20 @@ public class IncomeOrderService extends BaseService<IncomeOrderEntity, IncomeOrd
 
         Integer id = super.create(view);
 
+        double totalPrice = 0;
+        double totalPriceUsd = 0;
         for (IncomeView income : view.getIncomes()) {
             income.setIncomeOrderId(id);
-
             incomeService.create(income);
+
+            totalPrice += income.getAmount() * income.getIncomePrice();
+            totalPriceUsd += income.getAmount() * income.getIncomePriceUsd();
         }
+
+        final IncomeOrderEntity incomeOrder = getById(id);
+        incomeOrder.setTotalPrice(totalPrice);
+        incomeOrder.setTotalPriceUsd(totalPriceUsd);
+        updateEntity(incomeOrder);
 
         return id;
     }

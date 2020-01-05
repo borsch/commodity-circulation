@@ -35,6 +35,12 @@ public class IncomeOrderEntity implements IHasId<Integer> {
     @Column(name = "DATE_CREATED")
     private LocalDate dateCreated;
 
+    @Column(name = "TOTAL_PRICE")
+    private double totalPrice;
+
+    @Column(name = "TOTAL_PRICE_USD")
+    private double totalPriceUsd;
+
     @OneToMany(mappedBy = "incomeOrder", fetch = FetchType.EAGER)
     private List<IncomeEntity> incomes;
 
