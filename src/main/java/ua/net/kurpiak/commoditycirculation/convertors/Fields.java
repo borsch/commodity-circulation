@@ -14,19 +14,8 @@ public class Fields {
         public static final String OUTCOMES_INFO = "outcomesInfo";
     }
 
-    public static final class Income {
-        public static final String PRODUCT_ID = "productId";
-        public static final String PRODUCT_INFO = "productInfo";
-        public static final String INCOME_ORDER_ID = "incomeOrderId";
-        public static final String RESIDUAL = "residual";
-        public static final String INCOME_PRICE = "incomePrice";
-        public static final String INCOME_PRICE_USD = "incomePriceUsd";
-        public static final String AMOUNT = "amount";
-    }
-
     public static final class IncomeOrder {
         public static final String DATE_CREATED = "dateCreated";
-        public static final String INCOMES_ID = "incomes_id";
         public static final String COMMENT = "comment";
     }
 

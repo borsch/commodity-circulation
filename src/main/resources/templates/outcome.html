@@ -84,6 +84,12 @@
                                     </div>
                                 </td>
                             </tr>
+                        <tr>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td><strong>До сплати: </strong>{{totalToPay()}} грн</td>
+                        </tr>
                         </tbody>
                     </table>
                     <div class="row">
@@ -207,6 +213,15 @@
 				$scope.outcome_order_message_errors = [];
                 $scope.outcome_order_body.dateCreated = $('#outcome_order_body_dateCreated').val();
 
+                var allNumbersAreValid = $scope.outcome_order_body.outcomes.every(function(item){
+                    return parseFloat(item.amount) > 0 && parseInt(item.salePrice) > 0;
+                });
+
+                if (!allNumbersAreValid) {
+                    $scope.outcome_order_message = 'Кількість та ціна мають бути числами більше 0';
+                    return;
+                }
+
                 Ajax.put({
                     url: '/api/orders/outcome/',
                     data: $scope.outcome_order_body,
@@ -229,6 +244,16 @@
 
             $scope.previewOutcomeOrder = function(id) {
             	loadOutcomeOrder(id, $scope);
+            };
+
+            $scope.totalToPay = function() {
+                var total = 0;
+                $scope.outcome_order_body.outcomes.forEach(function(item) {
+                    if (item.amount > 0 && item.salePrice > 0) {
+                        total += item.amount * item.salePrice;
+                    }
+                });
+                return total;
             };
 
             outcomeAutoComplete($scope);

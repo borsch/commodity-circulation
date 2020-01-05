@@ -29,7 +29,7 @@ public class OutcomeEntity implements IHasId<Integer> {
     private Integer id;
 
     @NotNull(message = "Продукт є обов'язковим полем")
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "PRODUCT_ID")
     private ProductEntity product;
 

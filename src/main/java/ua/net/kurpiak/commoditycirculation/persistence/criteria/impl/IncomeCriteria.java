@@ -51,6 +51,8 @@ public class IncomeCriteria extends Criteria<IncomeEntity> {
             predicates.add(cb.equal(root.get("hasMore"), hasMore));
         }
 
+        root.fetch(IncomeEntity_.product);
+
         return predicates;
     }
 }

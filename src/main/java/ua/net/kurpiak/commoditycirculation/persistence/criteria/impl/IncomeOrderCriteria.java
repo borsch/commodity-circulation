@@ -1,13 +1,16 @@
 package ua.net.kurpiak.commoditycirculation.persistence.criteria.impl;
 
-import ua.net.kurpiak.commoditycirculation.persistence.criteria.Criteria;
-import ua.net.kurpiak.commoditycirculation.pojo.entities.IncomeOrderEntity;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
-import java.util.ArrayList;
-import java.util.List;
+
+import ua.net.kurpiak.commoditycirculation.persistence.criteria.Criteria;
+import ua.net.kurpiak.commoditycirculation.pojo.entities.IncomeEntity_;
+import ua.net.kurpiak.commoditycirculation.pojo.entities.IncomeOrderEntity;
+import ua.net.kurpiak.commoditycirculation.pojo.entities.IncomeOrderEntity_;
 
 public class IncomeOrderCriteria extends Criteria<IncomeOrderEntity> {
 
@@ -23,6 +26,8 @@ public class IncomeOrderCriteria extends Criteria<IncomeOrderEntity> {
 
     @Override
     public List<Predicate> query(Root<IncomeOrderEntity> root, CriteriaBuilder cb) {
+        root.fetch(IncomeOrderEntity_.incomes)
+            .fetch(IncomeEntity_.product);
         return new ArrayList<>();
     }
 }

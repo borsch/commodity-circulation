@@ -91,6 +91,12 @@
                                     </div>
                                 </td>
                             </tr>
+                            <tr>
+                                <td></td>
+                                <td></td>
+                                <td><strong>До сплати: </strong>{{totalToPay('incomePrice')}} грн</td>
+                                <td><strong>До сплати: </strong>{{totalToPay('incomePriceUsd')}} дол</td>
+                            </tr>
                         </tbody>
                     </table>
                     <div class="row">
@@ -212,6 +218,15 @@
 				$scope.income_order_message_errors = [];
                 $scope.income_order_body.dateCreated = $('#income_order_body_dateCreated').val();
 
+                var allNumbersAreValid = $scope.income_order_body.incomes.every(function(item){
+                    return parseFloat(item.amount) > 0 && parseInt(item.incomePrice) > 0 && parseInt(item.incomePriceUsd) > 0;
+                });
+
+                if (!allNumbersAreValid) {
+                    $scope.income_order_message = 'Кількість та ціна мають бути числами більше 0';
+                    return;
+                }
+
                 Ajax.put({
                     url: '/api/orders/income/',
                     data: $scope.income_order_body,
@@ -234,6 +249,16 @@
 
             $scope.previewIncomeOrder = function(id) {
             	loadIncomeOrder(id, $scope);
+            };
+
+            $scope.totalToPay = function(fieldName) {
+                var total = 0;
+                $scope.income_order_body.incomes.forEach(function(item){
+                    if (item.amount > 0 && item[fieldName] > 0) {
+                        total += item.amount * item[fieldName];
+                    }
+                });
+                return total;
             };
 
             incomeAutoComplete($scope);
@@ -266,8 +291,6 @@
                 	fields: 'id,comment,dateCreated,incomesInfo'
                 },
                 success: function(response) {
-                	console.log(response);
-
                 	$scope.$apply(function(){
                 		$scope.income_order_preview = response.result || {};
                 		if ($scope.income_order_preview.dateCreated) {
