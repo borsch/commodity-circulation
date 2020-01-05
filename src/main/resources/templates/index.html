@@ -138,7 +138,7 @@
         	Ajax.get({
                 url: '/api/products/',
                 data: {
-                	fields: 'id,code,name,unit,residual,defaultPurchasePrice,defaultPurchasePriceUsd,defaultSalePrice,incomesInfo'
+                	fields: 'id,code,name,unit,residual,defaultPurchasePrice,defaultPurchasePriceUsd,defaultSalePrice,incomesInfo,outcomesInfo'
                 },
                 success: function(response) {
                 	if (response.result) {

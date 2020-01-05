@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+<html ng-app="outcome" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <title>Розхід</title>
+</head>
+<body ng-controller="outcome">
+    <th:block th:replace="common::header" />
+    <div class="row" style="width: 95%; margin-left: 10px;">
+        <div class="row text-center">
+            <div class="col-md-10">
+                <h3>Розхід товару</h3>
+            </div>
+            <div class="col-md-2" style="line-height: 4.5">
+                <button class="btn btn-success" href="#addOutcome" ng-click="before_product_edit_model()" data-toggle="modal">Форма розходу</button>
+            </div>
+        </div>
+        <div ng-repeat="order in outcomeOrdersList | orderBy:['dateCreated']:true" style="margin-bottom: 10px; cursor: pointer; background: #d1d0db; padding: 7px;" ng-click="previewOutcomeOrder(order.id)">
+            <div class="row">
+                <div class="col-sm-2">
+                    &#35;{{order.id}}
+                </div>
+                <div class="col-sm-6">
+                    {{order.dateCreated_f}}
+                </div>
+                <div>
+                    {{order.comment}}
+                </div>
+            </div>
+        </div>
+    </div>
+    <th:block th:replace="common::footer" />
+    <script src="/resources/js/utils/autocomlete/jquery.auto-complete.min.js"></script>
+    <link rel="stylesheet" href="/resources/js/utils/autocomlete/jquery.auto-complete.css">
+
+    <link rel="stylesheet" href="/resources/js/flatpickr/flatpickr.min.css">
+    <link rel="stylesheet" href="/resources/js/flatpickr/dark.css">
+    <script src="/resources/js/flatpickr/flatpickr.js"></script>
+
+    <script src="/resources/js/utils/date.format.min.js"></script>
+
+    <div id="addOutcome" class="modal fade">
+        <div class="modal-dialog modal-lg" style="width: 1200px;">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                    <h4 class="modal-title">Форма розходу товару</h4>
+                </div>
+                <div class="modal-body">
+                    <h4>{{outcome_order_message}}</h4>
+                    <ul>
+                        <li ng-repeat="message in outcome_order_message_errors">
+                            {{message}}
+                        </li>
+                    </ul>
+
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>Товар</th>
+                                <th>Кількість</th>
+                                <th>Доступно</th>
+                                <th>Ціна за одиницю в гривні</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr ng-repeat="outcome in outcome_order_body.outcomes">
+                                <td>{{outcome.product.name}}<br />{{outcome.product.code}}</td>
+                                <td>
+                                    <div class="form-group row">
+                                        <div class="col-sm-7" style="padding-right: 1px;">
+                                            <input type="number" required class="form-control" ng-model="outcome.amount">
+                                        </div>
+                                        <label class="col-sm-5" style="font-size: 23px;"> {{outcome.product.unit}}</label>
+                                    </div>
+                                </td>
+                                <td>{{outcome.product.residual}}/{{outcome.product.unit}}</td>
+                                <td>
+                                    <div class="form-group row">
+                                        <div class="col-sm-7" style="padding-right: 1px;">
+                                            <input type="number" class="form-control" ng-model="outcome.salePrice">
+                                        </div>
+                                        <label class="col-sm-5" style="font-size: 23px;"> грн/{{outcome.product.unit}}</label>
+                                    </div>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <div class="row">
+                        <div class="form-group col-sm-7">
+                            <label>Коментар до замовлення</label>
+                            <textarea class="form-control" ng-model="outcome_order_body.comment"></textarea>
+                        </div>
+                        <div class="form-group col-sm-5">
+                            <label>Дата приходу</label>
+                            <input class="form-control" id="outcome_order_body_dateCreated" />
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label>Додати товар</label>
+                        <input class="form-control" id="autocomplete">
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Закрити</button>
+                    <button type="button" class="btn btn-primary" ng-click="saveOutcomeOrder()">Зберегти</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="addOutcomePreview" class="modal fade">
+        <div class="modal-dialog modal-lg" style="width: 1200px;">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                    <h4 class="modal-title">Прихід товару &#35;{{outcome_order_preview.id}}</h4>
+                </div>
+                <div class="modal-body">
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>Товар</th>
+                                <th>Кількість в розході</th>
+                                <th>Ціна за одиницю</th>
+                                <th>Прибуток</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr ng-repeat="outcome in outcome_order_preview.outcomesInfo">
+                                <td>{{outcome.productInfo.name}}<br />{{outcome.productInfo.code}}</td>
+                                <td>
+                                    <div class="form-group row">
+                                        <label class="col-sm-12" style="font-size: 23px;">{{outcome.amount}} {{outcome.productInfo.unit}}</label>
+                                    </div>
+                                </td>
+                                <td>
+                                    <div class="form-group row">
+                                        <label class="col-sm-12" style="font-size: 23px;">{{outcome.salePrice}} грн/{{outcome.productInfo.unit}}</label>
+                                    </div>
+                                </td>
+                                <td>
+                                    <div class="form-group row">
+                                        <label class="col-sm-5" style="font-size: 23px;">{{outcome.profit}} грн</label>
+                                    </div>
+                                </td>
+                            </tr>
+                        <tr>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td>
+                                <strong>Загальний сума: </strong>{{outcome_order_preview.totalPrice}} грн
+                                <br />
+                                <strong>Загальний прибуток: </strong>{{outcome_order_preview.totalProfit}} грн
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                    <div class="row">
+                        <div class="form-group col-sm-7">
+                            <label>Коментар до замовлення:</label>
+                            {{outcome_order_preview.comment}}
+                        </div>
+                        <div class="form-group col-sm-5">
+                            <label>Дата приходу:</label>
+                            {{outcome_order_preview.dateCreated_f}}
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Закрити</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        angular.module('outcome', []).controller('outcome', function($scope){
+            $scope.outcome_order_body = {
+            	outcomes: []
+            };
+
+            $scope.outcomeOrdersList = [];
+
+			Ajax.get({
+				url: '/api/orders/outcome/',
+				data: {
+					fields: 'id,comment,dateCreated,totalPrice,totalProfit'
+				},
+				success: function(response) {
+					var orders = response.result || [];
+
+					$scope.$apply(function(){
+						$scope.outcomeOrdersList = orders;
+						$scope.outcomeOrdersList.forEach(function(item){
+							if (item.dateCreated) {
+								item.dateCreated_f = new Date(item.dateCreated).format('dd MMMM, yyyy', 'uk')
+							}
+                        });
+					});
+				}
+			});
+
+            $scope.saveOutcomeOrder = function() {
+				$scope.outcome_order_message = '';
+				$scope.outcome_order_message_errors = [];
+                $scope.outcome_order_body.dateCreated = $('#outcome_order_body_dateCreated').val();
+
+                Ajax.put({
+                    url: '/api/orders/outcome/',
+                    data: $scope.outcome_order_body,
+                    success: function(response) {
+                    	$scope.$apply(function(){
+							if (response.result) {
+								$scope.outcome_order_body = {
+									outcomes: []
+								};
+
+								loadOutcomeOrder(response.result, $scope, true);
+							} else {
+								$scope.outcome_order_message = response.error.message;
+								$scope.outcome_order_message_errors = response.error.errors;
+                            }
+                        });
+                    }
+                })
+            };
+
+            $scope.previewOutcomeOrder = function(id) {
+            	loadOutcomeOrder(id, $scope);
+            };
+
+            outcomeAutoComplete($scope);
+        });
+
+		$('#outcome_order_body_dateCreated, [name=till]').flatpickr({
+			dateFormat: 'Y-m-d',
+			altInput: true,
+			altFormat: "F j, Y",
+			locale: {
+				firstDayOfWeek: 1,
+				weekdays: {
+					shorthand: ['Нд', 'Пн', 'Вт', 'Ср', 'Чт', 'Пт', 'Сб'],
+					longhand: ['Неділя', 'Понеділок', 'Вівторок', 'Середа', 'Четвер', 'П\'ятниця', 'Субота']
+				},
+				months: {
+					shorthand: ['Січ', 'Лют', 'Бер', 'Кві', 'Тра', 'Чер', 'Лип', 'Сер', 'Вер', 'Жов', 'Лист', 'Гру'],
+					longhand: ['Січень', 'Лютий', 'Березень', 'Квітень', 'Травень', 'Червень', 'Липень', 'Сервень', 'Вересень', 'Жовтень', 'Листопад', 'Грудень']
+				}
+			}
+		});
+
+		function loadOutcomeOrder(id, $scope, isNew) {
+			$('#addOutcome').modal('hide');
+			$('#addOutcomePreview').modal('show');
+
+			Ajax.get({
+                url: '/api/orders/outcome/' + id,
+                data: {
+                	fields: 'id,comment,dateCreated,totalPrice,totalProfit,outcomesInfo'
+                },
+                success: function(response) {
+                	$scope.$apply(function(){
+                		$scope.outcome_order_preview = response.result || {};
+                		if ($scope.outcome_order_preview.dateCreated) {
+							$scope.outcome_order_preview.dateCreated_f = new Date($scope.outcome_order_preview.dateCreated).format('dd MMMM, yyyy', 'uk')
+                        }
+
+                        if (isNew) {
+                        	$scope.outcomeOrdersList.push(angular.copy($scope.outcome_order_preview));
+                        }
+                    });
+                }
+            })
+        }
+
+        function outcomeAutoComplete($scope) {
+			$('#autocomplete').unbind().autoComplete({
+				minChars: 1,
+				source: function(term, suggest) {
+					$scope.$apply(function(){
+						$scope.outcome_order_message = '';
+						$scope.outcome_order_message_errors = [];
+					});
+
+					Ajax.get({
+						url: '/api/products/',
+						data: {
+							restrict: JSON.stringify({query: term}),
+							fields: 'id,name,code'
+						},
+						success: function(response) {
+							suggest(response.result || []);
+						}
+					});
+				},
+				onSelect: function(e, term, item) {
+					Ajax.get({
+						url: '/api/products/' + $(item).data('product-id'),
+						data: {
+							restrict: JSON.stringify({query: term}),
+							fields: 'id,name,code,unit,defaultSalePrice,residual'
+						},
+						success: function(response) {
+							var product = response.result;
+
+							if (product) {
+								$scope.$apply(function(){
+									var added = $scope.outcome_order_body.outcomes.some(function(item){
+										return item.productId === product.id
+									});
+
+									if (!added) {
+										$scope.outcome_order_body.outcomes.push({
+											productId: product.id,
+											product: product,
+                                            salePrice: product.defaultSalePrice,
+                                            amount: 0
+										});
+									} else {
+										$scope.outcome_order_message = 'Цей товар вже додано';
+									}
+								});
+							}
+						}
+					});
+				},
+				renderItem: function(product, search) {
+					search = search.replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&');
+					var re = new RegExp("(" + search.split(' ').join('|') + ")", "gi");
+
+					return '<div class="autocomplete-suggestion" data-product-id="' + product.id + '">'
+						+ product.code.replace(re, "<b>$1</b>") + ', ' + product.name.replace(re, "<b>$1</b>") + '</div>'
+				}
+			})
+        }
+    </script>
+</body>
+</html>

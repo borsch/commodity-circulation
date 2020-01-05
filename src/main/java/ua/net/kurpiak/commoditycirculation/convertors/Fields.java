@@ -11,6 +11,7 @@ public class Fields {
         public static final String DEFAULT_PURCHASE_PRICE_USD = "defaultPurchasePriceUsd";
         public static final String DEFAULT_SALE_PRICE = "defaultSalePrice";
         public static final String INCOMES_INFO = "incomesInfo";
+        public static final String OUTCOMES_INFO = "outcomesInfo";
     }
 
     public static final class Income {
@@ -32,6 +33,8 @@ public class Fields {
     public static final class OutcomeOrder {
         public static final String DATE_CREATED = "dateCreated";
         public static final String COMMENT = "comment";
+        public static final String TOTAL_PRICE = "totalPrice";
+        public static final String TOTAL_PROFIT = "totalProfit";
     }
 
 

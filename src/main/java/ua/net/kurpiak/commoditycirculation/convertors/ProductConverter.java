@@ -1,26 +1,39 @@
 package ua.net.kurpiak.commoditycirculation.convertors;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
-import ua.net.kurpiak.commoditycirculation.persistence.criteria.CriteriaRepository;
-import ua.net.kurpiak.commoditycirculation.persistence.criteria.impl.IncomeCriteria;
-import ua.net.kurpiak.commoditycirculation.pojo.entities.ProductEntity;
+import static ua.net.kurpiak.commoditycirculation.convertors.Fields.ID;
+import static ua.net.kurpiak.commoditycirculation.convertors.Fields.Product.CODE;
+import static ua.net.kurpiak.commoditycirculation.convertors.Fields.Product.DEFAULT_PURCHASE_PRICE;
+import static ua.net.kurpiak.commoditycirculation.convertors.Fields.Product.DEFAULT_PURCHASE_PRICE_USD;
+import static ua.net.kurpiak.commoditycirculation.convertors.Fields.Product.DEFAULT_SALE_PRICE;
+import static ua.net.kurpiak.commoditycirculation.convertors.Fields.Product.INCOMES_INFO;
+import static ua.net.kurpiak.commoditycirculation.convertors.Fields.Product.NAME;
+import static ua.net.kurpiak.commoditycirculation.convertors.Fields.Product.OUTCOMES_INFO;
+import static ua.net.kurpiak.commoditycirculation.convertors.Fields.Product.RESIDUAL;
+import static ua.net.kurpiak.commoditycirculation.convertors.Fields.Product.UNIT;
 
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
-import static ua.net.kurpiak.commoditycirculation.convertors.Fields.ID;
-import static ua.net.kurpiak.commoditycirculation.convertors.Fields.Product.*;
+import org.springframework.stereotype.Component;
+
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
+import ua.net.kurpiak.commoditycirculation.persistence.criteria.CriteriaRepository;
+import ua.net.kurpiak.commoditycirculation.persistence.criteria.impl.IncomeCriteria;
+import ua.net.kurpiak.commoditycirculation.persistence.criteria.impl.OutcomeCriteria;
+import ua.net.kurpiak.commoditycirculation.pojo.entities.IncomeEntity;
+import ua.net.kurpiak.commoditycirculation.pojo.entities.OutcomeEntity;
+import ua.net.kurpiak.commoditycirculation.pojo.entities.ProductEntity;
 
 @Component
+@RequiredArgsConstructor
 public class ProductConverter extends Converter<ProductEntity> {
 
-    @Autowired
-    private CriteriaRepository criteriaRepository;
+    private final CriteriaRepository criteriaRepository;
 
     @Override
-    public Map<String, Object> convert(ProductEntity object, Collection fields) {
+    public Map<String, Object> convert(ProductEntity object, Collection<String> fields) {
         Map<String, Object> map = new HashMap<>();
 
         if (fields.contains(ID))
@@ -45,32 +58,54 @@ public class ProductConverter extends Converter<ProductEntity> {
             incomeCriteria.setProductId(object.getId());
             incomeCriteria.setHasMore(true);
 
-            TotalPrice totalPrice = criteriaRepository.find(incomeCriteria).stream()
-                   .map(in -> new TotalPrice(in.getIncomePrice() * in.getResidual(), in.getIncomePriceUsd() * in.getResidual()))
-                   .reduce(new TotalPrice(0, 0), (p1, p2) -> new TotalPrice(p1.totalIncomePrice + p2.totalIncomePrice, p1.totalIncomePriceUsd + p2.totalIncomePriceUsd));
+            IncomeTotalPrice totalPrice = criteriaRepository.find(incomeCriteria).stream()
+                   .map(IncomeTotalPrice::of)
+                   .reduce(new IncomeTotalPrice(0, 0), IncomeTotalPrice::merge);
 
             map.put(INCOMES_INFO, totalPrice);
+        }
+
+        if (fields.contains(OUTCOMES_INFO)) {
+            OutcomeCriteria outcomeCriteria = new OutcomeCriteria();
+            outcomeCriteria.setProductId(object.getId());
+
+            final OutcomeTotalPrice totalPrice = criteriaRepository.find(outcomeCriteria).stream()
+                .map(OutcomeTotalPrice::of)
+                .reduce(new OutcomeTotalPrice(0, 0), OutcomeTotalPrice::merge);
+
+            map.put(OUTCOMES_INFO, totalPrice);
         }
 
         return map;
     }
 
-    private static final class TotalPrice {
-        private double totalIncomePrice;
-        private double totalIncomePriceUsd;
+    @Getter
+    @RequiredArgsConstructor
+    private static final class IncomeTotalPrice {
+        private final double totalIncomePrice;
+        private final double totalIncomePriceUsd;
 
-        public TotalPrice(double totalIncomePrice, double totalIncomePriceUsd) {
-            this.totalIncomePrice = totalIncomePrice;
-            this.totalIncomePriceUsd = totalIncomePriceUsd;
+        private static IncomeTotalPrice of(final IncomeEntity in) {
+            return new IncomeTotalPrice(in.getIncomePrice() * in.getResidual(), in.getIncomePriceUsd() * in.getResidual());
         }
 
-        public double getTotalIncomePrice() {
-            return totalIncomePrice;
+        private static IncomeTotalPrice merge(final IncomeTotalPrice p1, final IncomeTotalPrice p2) {
+            return new IncomeTotalPrice(p1.totalIncomePrice + p2.totalIncomePrice, p1.totalIncomePriceUsd + p2.totalIncomePriceUsd);
+        }
+    }
+
+    @Getter
+    @RequiredArgsConstructor
+    private static final class OutcomeTotalPrice {
+        private final double totalSalePrice;
+        private final double totalProfit;
+
+        private static OutcomeTotalPrice of(final OutcomeEntity out) {
+            return new OutcomeTotalPrice(out.getAmount() * out.getSalePrice(), out.getProfit());
         }
 
-        public double getTotalIncomePriceUsd() {
-            return totalIncomePriceUsd;
+        private static OutcomeTotalPrice merge(final OutcomeTotalPrice p1, final OutcomeTotalPrice p2) {
+            return new OutcomeTotalPrice(p1.totalSalePrice + p2.totalSalePrice, p1.totalProfit + p2.totalProfit);
         }
-
     }
 }
