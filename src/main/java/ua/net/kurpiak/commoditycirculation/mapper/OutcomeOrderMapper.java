@@ -16,7 +16,7 @@ public interface OutcomeOrderMapper extends ViewToEntityMapper<OutcomeOrderEntit
     @Mapping(target = "outcomes", ignore = true)
     @Mapping(target = "totalPrice", ignore = true)
     @Mapping(target = "totalProfit", ignore = true)
-    @Mapping(target = "dateCreated", source = "dateCreated", qualifiedByName = DefaultTypeMapper.MAP_DATE_OR_DEFAULT)
+    @Mapping(target = "dateCreated", source = "dateCreated", qualifiedByName = DefaultTypeMapper.MAP_DATE_TIME_OR_DEFAULT)
     @Mapping(target = "comment", source = "comment")
     OutcomeOrderEntity mapToEntity(OutcomeOrderView view);
 

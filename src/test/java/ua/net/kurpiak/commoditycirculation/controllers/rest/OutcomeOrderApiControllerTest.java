@@ -4,7 +4,7 @@ import static io.restassured.RestAssured.given;
 import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.mockito.Mockito.when;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -30,7 +30,7 @@ class OutcomeOrderApiControllerTest extends AbstractSpringBootTest {
     @DatabaseSetup("/OutcomeOrderApiControllerTest/initDb.xml")
     @ExpectedDatabase(value = "/OutcomeOrderApiControllerTest/expectedAfterSuccessWithdraw.xml", assertionMode = DatabaseAssertionMode.NON_STRICT)
     void shouldCreateOutcomeOrder() throws Exception {
-        when(clockService.getLocalDate()).thenReturn(LocalDate.of(2019, 1, 1));
+        when(clockService.getLocalDateTime()).thenReturn(LocalDateTime.of(2019, 1, 1, 1, 1, 1));
 
         final OutcomeOrderView outcomeOrderView = OutcomeOrderView.builder()
             .outcome(

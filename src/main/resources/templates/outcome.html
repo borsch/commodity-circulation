@@ -122,7 +122,7 @@
                             <textarea class="form-control" ng-model="outcome_order_body.comment"></textarea>
                         </div>
                         <div class="form-group col-sm-5">
-                            <label>Дата приходу</label>
+                            <label>Дата розходу</label>
                             <input class="form-control" id="outcome_order_body_dateCreated" />
                         </div>
                     </div>
@@ -144,7 +144,7 @@
             <div class="modal-content">
                 <div class="modal-header">
                     <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-                    <h4 class="modal-title">Прихід товару &#35;{{outcome_order_preview.id}}</h4>
+                    <h4 class="modal-title">Розхід товару &#35;{{outcome_order_preview.id}}</h4>
                 </div>
                 <div class="modal-body">
                     <table class="table">
@@ -193,7 +193,7 @@
                             {{outcome_order_preview.comment}}
                         </div>
                         <div class="form-group col-sm-5">
-                            <label>Дата приходу:</label>
+                            <label>Дата розходу:</label>
                             {{outcome_order_preview.dateCreated_f}}
                         </div>
                     </div>
@@ -225,7 +225,7 @@
 						$scope.outcomeOrdersList = orders;
 						$scope.outcomeOrdersList.forEach(function(item){
 							if (item.dateCreated) {
-								item.dateCreated_f = new Date(item.dateCreated).format('dd MMMM, yyyy', 'uk')
+								item.dateCreated_f = new Date(item.dateCreated).format('dd MMMM, yyyy HH:mm', 'uk')
 							}
                         });
 					});
@@ -288,9 +288,12 @@
         });
 
 		$('#outcome_order_body_dateCreated, [name=till]').flatpickr({
-			dateFormat: 'Y-m-d',
-			altInput: true,
-			altFormat: "F j, Y",
+            dateFormat: 'Y-m-dTH:i:S',
+            altInput: true,
+            enableTime: true,
+            time_24hr: true,
+            defaultDate: new Date(),
+            altFormat: "F j, Y H:i",
 			locale: {
 				firstDayOfWeek: 1,
 				weekdays: {
@@ -317,7 +320,7 @@
                 	$scope.$apply(function(){
                 		$scope.outcome_order_preview = response.result || {};
                 		if ($scope.outcome_order_preview.dateCreated) {
-							$scope.outcome_order_preview.dateCreated_f = new Date($scope.outcome_order_preview.dateCreated).format('dd MMMM, yyyy', 'uk')
+							$scope.outcome_order_preview.dateCreated_f = new Date($scope.outcome_order_preview.dateCreated).format('dd MMMM, yyyy HH:mm', 'uk')
                         }
 
                         if (isNew) {

@@ -2,8 +2,8 @@
     <products id="1" code="1" name="product1" unit="meter" residual="24" default_purchase_price="10" default_purchase_price_usd="1" default_sale_price="20"/>
     <products id="2" code="2" name="product2" unit="meter" residual="10" default_purchase_price="10" default_purchase_price_usd="1" default_sale_price="20"/>
 
-    <income_order id="1" date_created="2019-01-01" total_price="221" total_price_usd="21" />
-    <income_order id="2" date_created="2019-01-02" total_price="240" total_price_usd="22" />
+    <income_order id="1" date_created="2019-01-01 00:00:00" total_price="221" total_price_usd="21" />
+    <income_order id="2" date_created="2019-01-02 00:00:00" total_price="240" total_price_usd="22" />
 
     <income id="1" product_id="1" income_order_id="1" residual="10" amount="10" income_price="10" income_price_usd="1" has_more="true" />
     <income id="2" product_id="2" income_order_id="1" residual="11" amount="11" income_price="11" income_price_usd="1" has_more="true" />

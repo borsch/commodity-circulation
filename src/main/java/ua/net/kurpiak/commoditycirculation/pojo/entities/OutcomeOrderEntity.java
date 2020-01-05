@@ -1,6 +1,6 @@
 package ua.net.kurpiak.commoditycirculation.pojo.entities;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 
 import javax.persistence.Column;
@@ -33,7 +33,7 @@ public class OutcomeOrderEntity implements IHasId<Integer> {
     private String comment;
 
     @Column(name = "DATE_CREATED")
-    private LocalDate dateCreated;
+    private LocalDateTime dateCreated;
 
     @Column(name = "TOTAL_PRICE")
     private double totalPrice;

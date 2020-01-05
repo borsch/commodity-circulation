@@ -16,7 +16,7 @@ public interface IncomeOrderMapper extends ViewToEntityMapper<IncomeOrderEntity,
     @Mapping(target = "incomes", ignore = true)
     @Mapping(target = "totalPrice", ignore = true)
     @Mapping(target = "totalPriceUsd", ignore = true)
-    @Mapping(target = "dateCreated", source = "dateCreated", qualifiedByName = DefaultTypeMapper.MAP_DATE_OR_DEFAULT)
+    @Mapping(target = "dateCreated", source = "dateCreated", qualifiedByName = DefaultTypeMapper.MAP_DATE_TIME_OR_DEFAULT)
     @Mapping(target = "comment", source = "comment")
     IncomeOrderEntity mapToEntity(IncomeOrderView view);
 

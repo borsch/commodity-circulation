@@ -2,7 +2,7 @@
     <products id="1" code="1" name="product1" unit="meter" residual="20" default_purchase_price="200" default_purchase_price_usd="8" default_sale_price="20"/>
     <products id="2" code="2" name="product2" unit="meter" residual="27.2" default_purchase_price="15" default_purchase_price_usd="1" default_sale_price="20"/>
 
-    <income_order id="1000" date_created="2222-02-02" total_price="2258" total_price_usd="97.2" />
+    <income_order id="1000" date_created="2222-02-02 01:01:01" total_price="2258" total_price_usd="97.2" />
     <income id="1001" product_id="1" income_order_id="1000" residual="10" amount="10" income_price="200" income_price_usd="8" has_more="true" />
     <income id="1002" product_id="2" income_order_id="1000" residual="17.2" amount="17.2" income_price="15" income_price_usd="1" has_more="true" />
 </dataset>

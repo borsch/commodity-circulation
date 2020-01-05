@@ -1,7 +1,9 @@
 package ua.net.kurpiak.commoditycirculation.pojo.views;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
+
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import lombok.Builder;
 import lombok.Data;
@@ -10,12 +12,13 @@ import ua.net.kurpiak.commoditycirculation.pojo.helpers.IHasId;
 
 @Data
 @Builder
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class IncomeOrderView implements IHasId<Integer> {
 
     private Integer id;
     private String comment;
     @Singular
     private List<IncomeView> incomes;
-    private LocalDate dateCreated;
+    private LocalDateTime dateCreated;
 
 }

@@ -230,7 +230,7 @@
 						$scope.incomeOrdersList = orders;
 						$scope.incomeOrdersList.forEach(function(item){
 							if (item.dateCreated) {
-								item.dateCreated_f = new Date(item.dateCreated).format('dd MMMM, yyyy', 'uk')
+								item.dateCreated_f = new Date(item.dateCreated).format('dd MMMM, yyyy HH:mm', 'uk')
 							}
                         });
 					});
@@ -293,9 +293,12 @@
         });
 
 		$('#income_order_body_dateCreated, [name=till]').flatpickr({
-			dateFormat: 'Y-m-d',
+			dateFormat: 'Y-m-dTH:i:S',
 			altInput: true,
-			altFormat: "F j, Y",
+            enableTime: true,
+            time_24hr: true,
+            defaultDate: new Date(),
+			altFormat: "F j, Y H:i",
 			locale: {
 				firstDayOfWeek: 1,
 				weekdays: {
@@ -322,7 +325,7 @@
                 	$scope.$apply(function(){
                 		$scope.income_order_preview = response.result || {};
                 		if ($scope.income_order_preview.dateCreated) {
-							$scope.income_order_preview.dateCreated_f = new Date($scope.income_order_preview.dateCreated).format('dd MMMM, yyyy', 'uk')
+							$scope.income_order_preview.dateCreated_f = new Date($scope.income_order_preview.dateCreated).format('dd MMMM, yyyy HH:mm', 'uk')
                         }
 
                         if (isNew) {

@@ -3,7 +3,7 @@ package ua.net.kurpiak.commoditycirculation.controllers.rest;
 import static io.restassured.RestAssured.given;
 import static org.hamcrest.CoreMatchers.notNullValue;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 import org.junit.jupiter.api.Test;
 
@@ -25,7 +25,7 @@ class IncomeOrderApiControllerTest extends AbstractSpringBootTest {
     @ExpectedDatabase(value = "/IncomeOrderApiControllerTest/expectedAfterNew.xml", assertionMode = DatabaseAssertionMode.NON_STRICT)
     void shouldCreateIncomeOrder() throws Exception {
         final IncomeOrderView view = IncomeOrderView.builder()
-            .dateCreated(LocalDate.of(2222, 2, 2))
+            .dateCreated(LocalDateTime.of(2222, 2, 2, 1, 1, 1))
             .income(
                 IncomeView.builder()
                     .productId(1)
