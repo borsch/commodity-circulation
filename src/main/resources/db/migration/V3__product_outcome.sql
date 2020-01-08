@@ -1,26 +1,26 @@
-CREATE TABLE `OUTCOME_ORDER` (
-    `ID` INT(11) PRIMARY KEY AUTO_INCREMENT,
-    `COMMENT` TEXT DEFAULT NULL,
-    `DATE_CREATED` TIMESTAMP NOT NULL,
-    `TOTAL_PRICE` DECIMAL(10, 2) NOT NULL,
-    `TOTAL_PROFIT` DECIMAL(10, 2) NOT NULL
+CREATE TABLE `outcome_order` (
+    `id` INT(11) PRIMARY KEY AUTO_INCREMENT,
+    `comment` TEXT DEFAULT NULL,
+    `date_created` TIMESTAMP NOT NULL,
+    `total_price` DECIMAL(10, 2) NOT NULL,
+    `total_profit` DECIMAL(10, 2) NOT NULL
 );
 
-CREATE TABLE `OUTCOME` (
-    `ID` INT(11) PRIMARY KEY AUTO_INCREMENT,
-    `PRODUCT_ID` INT(11) NOT NULL,
-    `OUTCOME_ORDER_ID` INT(11) NOT NULL,
-    `AMOUNT` DECIMAL(10, 2) NOT NULL,
-    `SALE_PRICE` DECIMAL(10, 2) NOT NULL,
-    CONSTRAINT `fk_OUTCOME_TO_PRODUCT` FOREIGN KEY (`PRODUCT_ID`) REFERENCES `PRODUCTS`(`ID`),
-    CONSTRAINT `fk_OUTCOME_TO_OUTCOME_ORDER` FOREIGN KEY (`OUTCOME_ORDER_ID`) REFERENCES `OUTCOME_ORDER`(`ID`)
+CREATE TABLE `outcome` (
+    `id` INT(11) PRIMARY KEY AUTO_INCREMENT,
+    `product_id` INT(11) NOT NULL,
+    `outcome_order_id` INT(11) NOT NULL,
+    `amount` DECIMAL(10, 2) NOT NULL,
+    `sale_price` DECIMAL(10, 2) NOT NULL,
+    CONSTRAINT `fk_outcome_to_product` FOREIGN KEY (`product_id`) REFERENCES `products`(`id`),
+    CONSTRAINT `fk_outcome_to_outcome_order` FOREIGN KEY (`outcome_order_id`) REFERENCES `outcome_order`(`id`)
 );
 
-CREATE TABLE `OUTCOME_TO_INCOME` (
-  `OUTCOME_ID` INT(11) NOT NULL,
-  `INCOME_ID` INT(11) NOT NULL,
-  `AMOUNT` DECIMAL(10, 2) NOT NULL,
-  UNIQUE `pk_OUTCOME_TO_INCOME` (`OUTCOME_ID`, `INCOME_ID`),
-  CONSTRAINT `fk_OUTCOME_ID_TO_OUTCOME` FOREIGN KEY (`OUTCOME_ID`) REFERENCES `OUTCOME`(`ID`),
-  CONSTRAINT `fk_INCOME_ID_TO_INCOME` FOREIGN KEY (`INCOME_ID`) REFERENCES `INCOME`(`ID`)
+CREATE TABLE `outcome_to_income` (
+  `outcome_id` INT(11) NOT NULL,
+  `income_id` INT(11) NOT NULL,
+  `amount` DECIMAL(10, 2) NOT NULL,
+  UNIQUE `pk_outcome_to_income` (`outcome_id`, `income_id`),
+  CONSTRAINT `fk_outcome_id_to_outcome` FOREIGN KEY (`outcome_id`) REFERENCES `outcome`(`id`),
+  CONSTRAINT `fk_income_id_to_income` FOREIGN KEY (`income_id`) REFERENCES `income`(`id`)
 );

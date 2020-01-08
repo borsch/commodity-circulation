@@ -1,1 +1,1 @@
-DROP TABLE `OUTCOME_TO_INCOME`;
+DROP TABLE `outcome_to_income`;
