@@ -26,8 +26,12 @@ public class OutcomeOrderCriteria extends Criteria<OutcomeOrderEntity> {
 
     @Override
     public List<Predicate> query(Root<OutcomeOrderEntity> root, CriteriaBuilder cb) {
+        return new ArrayList<>();
+    }
+
+    @Override
+    public void fetch(final Root<OutcomeOrderEntity> root) {
         root.fetch(OutcomeOrderEntity_.outcomes)
             .fetch(OutcomeEntity_.product);
-        return new ArrayList<>();
     }
 }

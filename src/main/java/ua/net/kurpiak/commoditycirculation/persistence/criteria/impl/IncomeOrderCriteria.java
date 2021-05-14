@@ -26,8 +26,12 @@ public class IncomeOrderCriteria extends Criteria<IncomeOrderEntity> {
 
     @Override
     public List<Predicate> query(Root<IncomeOrderEntity> root, CriteriaBuilder cb) {
+        return new ArrayList<>();
+    }
+
+    @Override
+    public void fetch(final Root<IncomeOrderEntity> root) {
         root.fetch(IncomeOrderEntity_.incomes)
             .fetch(IncomeEntity_.product);
-        return new ArrayList<>();
     }
 }

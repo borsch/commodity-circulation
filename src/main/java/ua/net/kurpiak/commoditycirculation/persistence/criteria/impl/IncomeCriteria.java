@@ -24,6 +24,8 @@ public class IncomeCriteria extends Criteria<IncomeEntity> {
     private Integer productId;
     private Boolean hasMore;
 
+    private boolean fetch = true;
+
     public IncomeCriteria() {
         super(IncomeEntity.class);
     }
@@ -51,8 +53,13 @@ public class IncomeCriteria extends Criteria<IncomeEntity> {
             predicates.add(cb.equal(root.get("hasMore"), hasMore));
         }
 
-        root.fetch(IncomeEntity_.product);
-
         return predicates;
+    }
+
+    @Override
+    public void fetch(final Root<IncomeEntity> root) {
+        if (fetch) {
+            root.fetch(IncomeEntity_.product);
+        }
     }
 }

@@ -24,14 +24,11 @@ import ua.net.kurpiak.commoditycirculation.services.products.ProductService;
 public class OutcomeService extends BaseService<OutcomeEntity, OutcomeView, Integer> {
 
     private final IncomeService incomeService;
-    private final ProductService productService;
 
     public OutcomeService(final OutcomeRepository repository, final OutcomeConverter converter, final OutcomeMapper outcomeMapper,
-        final CriteriaRepository criteriaRepository, final OutcomeValidator validationService, final IncomeService incomeService,
-        final ProductService productService) {
+        final CriteriaRepository criteriaRepository, final OutcomeValidator validationService, final IncomeService incomeService) {
         super(repository, converter, outcomeMapper, criteriaRepository, validationService);
         this.incomeService = incomeService;
-        this.productService = productService;
     }
 
     @Override

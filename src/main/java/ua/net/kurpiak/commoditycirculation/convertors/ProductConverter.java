@@ -57,6 +57,7 @@ public class ProductConverter extends Converter<ProductEntity> {
             IncomeCriteria incomeCriteria = new IncomeCriteria();
             incomeCriteria.setProductId(object.getId());
             incomeCriteria.setHasMore(true);
+            incomeCriteria.setFetch(false);
 
             IncomeTotalPrice totalPrice = criteriaRepository.find(incomeCriteria).stream()
                    .map(IncomeTotalPrice::of)
@@ -68,6 +69,7 @@ public class ProductConverter extends Converter<ProductEntity> {
         if (fields.contains(OUTCOMES_INFO)) {
             OutcomeCriteria outcomeCriteria = new OutcomeCriteria();
             outcomeCriteria.setProductId(object.getId());
+            outcomeCriteria.setFetch(false);
 
             final OutcomeTotalPrice totalPrice = criteriaRepository.find(outcomeCriteria).stream()
                 .map(OutcomeTotalPrice::of)

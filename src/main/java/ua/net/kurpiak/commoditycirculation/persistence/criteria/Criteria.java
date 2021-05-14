@@ -50,6 +50,10 @@ public abstract class Criteria<T> {
      */
     public abstract List<Predicate> query(Root<T> root, CriteriaBuilder cb);
 
+    public void fetch(Root<T> root) {
+
+    }
+
     public Query createQuery(EntityManager em) {
         CriteriaBuilder cb = em.getCriteriaBuilder();
         CriteriaQuery<T> query = cb.createQuery(entityClass);
@@ -62,6 +66,7 @@ public abstract class Criteria<T> {
             query.where(cb.and(predicates.toArray(new Predicate[0])));
         }
 
+        fetch(root);
         query.orderBy(formOrder(cb, root));
 
         return em.createQuery(query);

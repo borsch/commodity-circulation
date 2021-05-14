@@ -25,6 +25,7 @@ public class OutcomeCriteria extends Criteria<OutcomeEntity> {
 
     private Integer productId;
     private Integer orderId;
+    private boolean fetch = true;
 
     public OutcomeCriteria() {
         super(OutcomeEntity.class);
@@ -53,9 +54,13 @@ public class OutcomeCriteria extends Criteria<OutcomeEntity> {
             predicates.add(cb.equal(orderJoin.get(OutcomeOrderEntity_.id), orderId));
         }
 
-        root.fetch(OutcomeEntity_.product);
-
         return predicates;
     }
 
+    @Override
+    public void fetch(final Root<OutcomeEntity> root) {
+        if (fetch) {
+            root.fetch(OutcomeEntity_.product);
+        }
+    }
 }

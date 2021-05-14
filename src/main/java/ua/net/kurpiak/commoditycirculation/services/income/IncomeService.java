@@ -61,7 +61,7 @@ public class IncomeService extends BaseService<IncomeEntity, IncomeView, Integer
 
     public double handleWithdraw(ProductEntity product, double amount, double salePrice) {
         List<IncomeEntity> incomes = incomeRepository.findByProductWithHasMore(product.getId());
-        log.info("Found {} income(s) for product {}({})\n{}", incomes.size(), product.getName(), product.getCode(), incomes);
+        log.info("Found {} income(s) for product {}({})", incomes.size(), product.getName(), product.getCode());
 
         validateWithdrawAmount(incomes, product, amount);
         double profit = 0;
